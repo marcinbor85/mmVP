@@ -30,10 +30,13 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include <stdio.h>
 #include <stdbool.h>
+#include <stddef.h>
+#include <string.h>
+#include <assert.h>
 
 #include "mmvp.h"
+#include "mmvp_utils.h"
 
 #define TEST_COMMON_DEVICE_MEMORY_TOTAL_SIZE    (8192UL)
 #define TEST_COMMON_DEVICE_MEMORY_PAGE_SIZE     (32UL)
@@ -44,7 +47,7 @@ extern const struct mmvp_device_descriptor *test_device_descriptor;
 #define TEST_COMMON_PARTITION1_ADDRESS          (0x0000UL)
 
 #define TEST_COMMON_PARTITION2_SIZE             (512UL)
-#define TEST_COMMON_PARTITION2_ADDRESS          (0x1000UL)
+#define TEST_COMMON_PARTITION2_ADDRESS          (0x0800UL)
 
 extern const struct mmvp_partition_descriptor *test_partition1_descriptor;
 extern const struct mmvp_partition_descriptor *test_partition2_descriptor;

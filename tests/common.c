@@ -22,15 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include <stdio.h>
-#include <stdint.h>
-#include <string.h>
-#include <stdbool.h>
-
-#include <assert.h>
-
-#include "mmvp.h"
-
 #include "common.h"
 
 static int read_page(uint8_t *data, uint32_t size_to_read, uint32_t *read_size)

@@ -22,15 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include <stdio.h>
-#include <stdint.h>
-#include <string.h>
-#include <stdbool.h>
-
-#include <assert.h>
-
-#include "mmvp.h"
-
 #include "common.h"
 
 static struct mmvp_controller mmvp;
@@ -77,6 +68,112 @@ int main(int argc, char **argv)
         assert(e == MMVP_ERROR_WRONG_SIZE);
 
         prepare_test();
+        device_descriptor.page_size = 16;
+        partition1_descriptor.address = 24;
+        e = mmvp_register_partition(&mmvp, &partition1, &partition1_descriptor);
+        assert(e == MMVP_ERROR_ADDRESS_ALIGNMENT);
+
+        prepare_test();
+        device_descriptor.page_size = 16;
+        partition1_descriptor.address = 4;
+        e = mmvp_register_partition(&mmvp, &partition1, &partition1_descriptor);
+        assert(e == MMVP_ERROR_ADDRESS_ALIGNMENT);
+
+        prepare_test();
+        device_descriptor.page_size = 16;
+        partition1_descriptor.address = 0;
+        e = mmvp_register_partition(&mmvp, &partition1, &partition1_descriptor);
+        assert(e == MMVP_ERROR_OK);
+
+        prepare_test();
+        device_descriptor.page_size = 16;
+        partition1_descriptor.address = 16;
+        e = mmvp_register_partition(&mmvp, &partition1, &partition1_descriptor);
+        assert(e == MMVP_ERROR_OK);
+
+        prepare_test();
+        device_descriptor.page_size = 16;
+        partition1_descriptor.address = 32;
+        e = mmvp_register_partition(&mmvp, &partition1, &partition1_descriptor);
+        assert(e == MMVP_ERROR_OK);
+
+        prepare_test();
+        device_descriptor.total_size = 64;
+        device_descriptor.page_size = 16;
+        partition1_descriptor.address = 0;
+        partition1_descriptor.size = 32;
+        e = mmvp_register_partition(&mmvp, &partition1, &partition1_descriptor);
+        assert(e == MMVP_ERROR_OUT_OF_MEMORY);
+
+        prepare_test();
+        device_descriptor.total_size = 128;
+        device_descriptor.page_size = 16;
+        partition1_descriptor.address = 0;
+        partition1_descriptor.size = 32;
+        e = mmvp_register_partition(&mmvp, &partition1, &partition1_descriptor);
+        assert(e == MMVP_ERROR_OK);
+
+        prepare_test();
+        device_descriptor.total_size = 128;
+        device_descriptor.page_size = 32;
+        partition1_descriptor.address = 0;
+        partition1_descriptor.size = 32;
+        e = mmvp_register_partition(&mmvp, &partition1, &partition1_descriptor);
+        assert(e == MMVP_ERROR_OK);
+
+        prepare_test();
+        device_descriptor.total_size = 128;
+        device_descriptor.page_size = 32;
+        partition1_descriptor.address = 0;
+        partition1_descriptor.size = 33;
+        e = mmvp_register_partition(&mmvp, &partition1, &partition1_descriptor);
+        assert(e == MMVP_ERROR_OUT_OF_MEMORY);
+
+        prepare_test();
+        device_descriptor.total_size = 128;
+        device_descriptor.page_size = 32;
+        partition1_descriptor.address = 32;
+        partition1_descriptor.size = 32;
+        e = mmvp_register_partition(&mmvp, &partition1, &partition1_descriptor);
+        assert(e == MMVP_ERROR_OUT_OF_MEMORY);
+
+        prepare_test();
+        partition1_descriptor.address = 0;
+        partition1_descriptor.size = 32;
+        partition2_descriptor.address = 32;
+        partition2_descriptor.size = 32;
+        mmvp_register_partition(&mmvp, &partition1, &partition1_descriptor);
+        e = mmvp_register_partition(&mmvp, &partition2, &partition2_descriptor);
+        assert(e == MMVP_ERROR_PARTITION_OVERLAP);
+
+        prepare_test();
+        partition1_descriptor.address = 32;
+        partition1_descriptor.size = 32;
+        partition2_descriptor.address = 0;
+        partition2_descriptor.size = 32;
+        mmvp_register_partition(&mmvp, &partition1, &partition1_descriptor);
+        e = mmvp_register_partition(&mmvp, &partition2, &partition2_descriptor);
+        assert(e == MMVP_ERROR_PARTITION_OVERLAP);
+
+        prepare_test();
+        partition1_descriptor.address = 0;
+        partition1_descriptor.size = 32;
+        partition2_descriptor.address = 64;
+        partition2_descriptor.size = 32;
+        mmvp_register_partition(&mmvp, &partition1, &partition1_descriptor);
+        e = mmvp_register_partition(&mmvp, &partition2, &partition2_descriptor);
+        assert(e == MMVP_ERROR_OK);
+
+        prepare_test();
+        partition1_descriptor.address = 0;
+        partition1_descriptor.size = 256;
+        partition2_descriptor.address = 64;
+        partition2_descriptor.size = 32;
+        mmvp_register_partition(&mmvp, &partition1, &partition1_descriptor);
+        e = mmvp_register_partition(&mmvp, &partition2, &partition2_descriptor);
+        assert(e == MMVP_ERROR_PARTITION_OVERLAP);
+
+        prepare_test();
         e = mmvp_register_partition(&mmvp, &partition1, &partition1_descriptor);
         assert(e == MMVP_ERROR_OK);
         assert(partition1.desc == &partition1_descriptor);
@@ -87,6 +184,10 @@ int main(int argc, char **argv)
         assert(partition2.desc == &partition2_descriptor);
         assert(partition2.next == &partition1);
         assert(mmvp.first == &partition2);
+        e = mmvp_register_partition(&mmvp, &partition1, &partition1_descriptor);
+        assert(e == MMVP_ERROR_PARTITION_EXIST);
+        e = mmvp_register_partition(&mmvp, &partition2, &partition2_descriptor);
+        assert(e == MMVP_ERROR_PARTITION_EXIST);
 
 	return 0;
 }

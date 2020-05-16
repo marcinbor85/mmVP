@@ -1,0 +1,10 @@
+TODO:
+- default values
+- partitioning
+- mirroring
+- synchronizing
+- read only, read write, write only partiton types
+- expanding partitions
+- direct data access and callback data access
+- runtime registering partitions 
+

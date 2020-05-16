@@ -22,35 +22,26 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef COMMON_H
-#define COMMON_H
+#ifndef MMVP_ASSERT_H
+#define MMVP_ASSERT_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <stdint.h>
-#include <stdio.h>
-#include <stdbool.h>
+#ifdef MMVP_USE_CHECK_PARAM
 
-#include "mmvp.h"
+    #define mmvp_check_param(expr, error) { if (!(expr)) return error; }
 
-#define TEST_COMMON_DEVICE_MEMORY_TOTAL_SIZE    (8192UL)
-#define TEST_COMMON_DEVICE_MEMORY_PAGE_SIZE     (32UL)
+#else
 
-extern const struct mmvp_device_descriptor *test_device_descriptor;
+    #define mmvp_check_param(expr, error) ((void)0U)
 
-#define TEST_COMMON_PARTITION1_SIZE             (256UL)
-#define TEST_COMMON_PARTITION1_ADDRESS          (0x0000UL)
+#endif
 
-#define TEST_COMMON_PARTITION2_SIZE             (512UL)
-#define TEST_COMMON_PARTITION2_ADDRESS          (0x1000UL)
-
-extern const struct mmvp_partition_descriptor *test_partition1_descriptor;
-extern const struct mmvp_partition_descriptor *test_partition2_descriptor;
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* MMVP_H */
+#endif /* MMVP_ASSERT_H */

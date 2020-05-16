@@ -14,6 +14,7 @@ file( GLOB SRC_FILES src/*.c )
 add_library( mmvp SHARED ${SRC_FILES} )
 set_target_properties( mmvp PROPERTIES VERSION 0.1.0 SOVERSION 1 )
 target_compile_options( mmvp PRIVATE -Werror -Wall -Wextra -pedantic )
+target_compile_definitions( mmvp PRIVATE MMVP_USE_CHECK_PARAM)
 
 install( TARGETS mmvp DESTINATION lib )
 install( FILES src/mmvp.h DESTINATION include/mmvp )

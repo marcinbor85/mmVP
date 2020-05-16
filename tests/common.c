@@ -48,7 +48,7 @@ static const struct mmvp_device_descriptor _test_device_descriptor = {
         .write = write_block,
 
         .total_size = TEST_COMMON_DEVICE_MEMORY_TOTAL_SIZE,
-        .block_size = TEST_COMMON_DEVICE_MEMORY_BLOCK_SIZE
+        .page_size = TEST_COMMON_DEVICE_MEMORY_PAGE_SIZE
 };
 
 const struct mmvp_device_descriptor *test_device_descriptor = &_test_device_descriptor;

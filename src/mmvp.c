@@ -23,37 +23,50 @@ SOFTWARE.
 */
 
 #include "mmvp.h"
+#include "mmvp_assert.h"
 
 #include <string.h>
-#include <assert.h>
 
-void mmvp_init(struct mmvp_object *self, const struct mmvp_device_descriptor *device)
+mmvp_error mmvp_init(struct mmvp_object *self, const struct mmvp_device_descriptor *device)
 {
-        assert(self != NULL);
-        assert(device != NULL);
+        mmvp_check_param(self != NULL, MMVP_ERROR_NULL_POINTER);
+        mmvp_check_param(device != NULL, MMVP_ERROR_NULL_POINTER);
 
-        assert(device->block_size > 0);
-        assert(device->total_size > 0);
+        mmvp_check_param(device->read != NULL, MMVP_ERROR_NULL_POINTER);
+        mmvp_check_param(device->write != NULL, MMVP_ERROR_NULL_POINTER);
+        mmvp_check_param(device->page_size > 0, MMVP_ERROR_WRONG_SIZE);
+        mmvp_check_param(device->total_size > 0, MMVP_ERROR_WRONG_SIZE);
 
-        assert(device->block_size <= device->total_size);
+        mmvp_check_param(device->page_size <= device->total_size, MMVP_ERROR_WRONG_SIZE);
 
         self->device = device;
         self->first = NULL;
+
+        return MMVP_ERROR_OK;
 }
 
-void mmvp_register_partition(struct mmvp_object *self, struct mmvp_partition *partition, const struct mmvp_partition_descriptor *desc)
+mmvp_error mmvp_register_partition(struct mmvp_object *self, struct mmvp_partition *partition, const struct mmvp_partition_descriptor *desc)
 {
-        assert(self != NULL);
-        assert(partition != NULL);
-        assert(desc != NULL);
+        mmvp_check_param(self != NULL, MMVP_ERROR_NULL_POINTER);
+        mmvp_check_param(partition != NULL, MMVP_ERROR_NULL_POINTER);
+        mmvp_check_param(desc != NULL, MMVP_ERROR_NULL_POINTER);
+
+        mmvp_check_param(desc->data != NULL, MMVP_ERROR_NULL_POINTER);
+        mmvp_check_param(desc->size > 0, MMVP_ERROR_WRONG_SIZE);
+        mmvp_check_param((desc->address % self->device->page_size) == 0, MMVP_ERROR_ADDRESS_PADDING);
 
         partition->desc = desc;
         partition->next = self->first;
         self->first = partition;
+
+        return MMVP_ERROR_OK;
 }
 
 mmvp_error mmvp_unregister_partition(struct mmvp_object *self, struct mmvp_partition *partition)
 {
+        mmvp_check_param(self != NULL, MMVP_ERROR_NULL_POINTER);
+        mmvp_check_param(partition != NULL, MMVP_ERROR_NULL_POINTER);
+
         struct mmvp_partition *curr_part = self->first;
         struct mmvp_partition *prev_part = NULL;
 
@@ -64,7 +77,7 @@ mmvp_error mmvp_unregister_partition(struct mmvp_object *self, struct mmvp_parti
                         } else {
                                 prev_part->next = curr_part->next;
                         }
-                        return MMVP_ERROR_NO_ERROR;
+                        return MMVP_ERROR_OK;
                 }
                 prev_part = curr_part;
                 curr_part = curr_part->next;
@@ -73,11 +86,37 @@ mmvp_error mmvp_unregister_partition(struct mmvp_object *self, struct mmvp_parti
         return MMVP_ERROR_PARTITION_NOT_EXIST;
 }
 
-void mmvp_start(struct mmvp_object *self)
+uint32_t get_partition_data_start_address(struct mmvp_object *self, struct mmvp_partition *partition)
 {
+        mmvp_check_param(self != NULL, MMVP_ERROR_NULL_POINTER);
+        mmvp_check_param(partition != NULL, MMVP_ERROR_NULL_POINTER);
+        
+        uint32_t adr;
+        uint32_t padding;
+
+        adr = partition->desc->address + sizeof(struct mmvp_partition_header);
+        padding = adr % self->device->page_size;
+
+        return adr + padding;
+}
+
+static void load_partition_data(struct mmvp_object *self, struct mmvp_partition *partition)
+{
+        (void)self;
+        (void)partition;
+}
+
+mmvp_error mmvp_start(struct mmvp_object *self)
+{
+        mmvp_check_param(self != NULL, MMVP_ERROR_NULL_POINTER);
+
         struct mmvp_partition *curr_part = self->first;
 
         while (curr_part != NULL) {
+                load_partition_data(self, curr_part);
+
                 curr_part = curr_part->next;
         }
+
+        return MMVP_ERROR_OK;
 }

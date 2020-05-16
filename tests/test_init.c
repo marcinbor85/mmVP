@@ -35,11 +35,55 @@ SOFTWARE.
 
 static struct mmvp_object mmvp;
 
+static struct mmvp_device_descriptor device_descriptor;
+
+static void prepare_test(void)
+{
+        memcpy((uint8_t*)&device_descriptor, (uint8_t*)test_device_descriptor, sizeof(device_descriptor));
+}
+
 int main(int argc, char **argv)
 {
-        mmvp_init(&mmvp, test_device_descriptor);
+        mmvp_error e;
+
+        prepare_test();
+        e = mmvp_init(&mmvp, NULL);
+        assert(e == MMVP_ERROR_NULL_POINTER);
+
+        prepare_test();
+        e = mmvp_init(NULL, &device_descriptor);
+        assert(e == MMVP_ERROR_NULL_POINTER);
+
+        prepare_test();
+        device_descriptor.read = NULL;
+        e = mmvp_init(&mmvp, &device_descriptor);
+        assert(e == MMVP_ERROR_NULL_POINTER);
+
+        prepare_test();
+        device_descriptor.write = NULL;
+        e = mmvp_init(&mmvp, &device_descriptor);
+        assert(e == MMVP_ERROR_NULL_POINTER);
+
+        prepare_test();
+        device_descriptor.page_size = 0;
+        e = mmvp_init(&mmvp, &device_descriptor);
+        assert(e == MMVP_ERROR_WRONG_SIZE);
+
+        prepare_test();
+        device_descriptor.total_size = 0;
+        e = mmvp_init(&mmvp, &device_descriptor);
+        assert(e == MMVP_ERROR_WRONG_SIZE);
+
+        prepare_test();
+        device_descriptor.total_size = device_descriptor.page_size - 1;
+        e = mmvp_init(&mmvp, &device_descriptor);
+        assert(e == MMVP_ERROR_WRONG_SIZE);
+
+        prepare_test();
+        e = mmvp_init(&mmvp, &device_descriptor);
+        assert(e == MMVP_ERROR_OK);
         assert(mmvp.first == NULL);
-        assert(mmvp.device == test_device_descriptor);
+        assert(mmvp.device == &device_descriptor);
 
 	return 0;
 }

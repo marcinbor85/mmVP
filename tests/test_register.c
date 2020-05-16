@@ -37,18 +37,54 @@ static struct mmvp_object mmvp;
 static struct mmvp_partition partition1;
 static struct mmvp_partition partition2;
 
+static struct mmvp_device_descriptor device_descriptor;
+
+static struct mmvp_partition_descriptor partition1_descriptor;
+static struct mmvp_partition_descriptor partition2_descriptor;
+
+static void prepare_test(void)
+{
+        memcpy((uint8_t*)&device_descriptor, (uint8_t*)test_device_descriptor, sizeof(device_descriptor));
+        mmvp_init(&mmvp, &device_descriptor);
+        memcpy((uint8_t*)&partition1_descriptor, (uint8_t*)test_partition1_descriptor, sizeof(partition1_descriptor));
+        memcpy((uint8_t*)&partition2_descriptor, (uint8_t*)test_partition2_descriptor, sizeof(partition2_descriptor));
+}
+
 int main(int argc, char **argv)
 {
         mmvp_error e;
 
-        mmvp_init(&mmvp, test_device_descriptor);
+        prepare_test();
+        e = mmvp_register_partition(NULL, NULL, NULL);
+        assert(e == MMVP_ERROR_NULL_POINTER);
 
-        mmvp_register_partition(&mmvp, &partition1, test_partition1_descriptor);
-        assert(partition1.desc == test_partition1_descriptor);
+        prepare_test();
+        e = mmvp_register_partition(&mmvp, NULL, NULL);
+        assert(e == MMVP_ERROR_NULL_POINTER);
+
+        prepare_test();
+        e = mmvp_register_partition(&mmvp, &partition1, NULL);
+        assert(e == MMVP_ERROR_NULL_POINTER);
+
+        prepare_test();
+        partition1_descriptor.data = NULL;
+        e = mmvp_register_partition(&mmvp, &partition1, &partition1_descriptor);
+        assert(e == MMVP_ERROR_NULL_POINTER);
+
+        prepare_test();
+        partition1_descriptor.size = 0;
+        e = mmvp_register_partition(&mmvp, &partition1, &partition1_descriptor);
+        assert(e == MMVP_ERROR_WRONG_SIZE);
+
+        prepare_test();
+        e = mmvp_register_partition(&mmvp, &partition1, &partition1_descriptor);
+        assert(e == MMVP_ERROR_OK);
+        assert(partition1.desc == &partition1_descriptor);
         assert(partition1.next == NULL);
         assert(mmvp.first == &partition1);
-        mmvp_register_partition(&mmvp, &partition2, test_partition2_descriptor);
-        assert(partition2.desc == test_partition2_descriptor);
+        e = mmvp_register_partition(&mmvp, &partition2, &partition2_descriptor);
+        assert(e == MMVP_ERROR_OK);
+        assert(partition2.desc == &partition2_descriptor);
         assert(partition2.next == &partition1);
         assert(mmvp.first == &partition2);
 

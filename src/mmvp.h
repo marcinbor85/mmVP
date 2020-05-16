@@ -34,15 +34,12 @@ extern "C" {
 #include <stdbool.h>
 
 typedef enum {
-        MMVP_ERROR_PARTITION_NOT_EXIST = -2,
-        MMVP_ERROR_GENERAL = -1,
-        MMVP_ERROR_NO_ERROR = 0
+        MMVP_ERROR_NULL_POINTER = -4,
+        MMVP_ERROR_WRONG_SIZE = -3,
+        MMVP_ERROR_ADDRESS_PADDING = -2,
+        MMVP_ERROR_PARTITION_NOT_EXIST = -1,
+        MMVP_ERROR_OK = 0
 } mmvp_error;
-
-typedef enum {
-        MMVP_PARTITION_TYPE_READONLY = 0,
-        MMVP_PARTITION_TYPE_READWRITE,
-} mmvp_partition_type;
 
 struct mmvp_partition_descriptor {
         uint32_t address;
@@ -50,12 +47,22 @@ struct mmvp_partition_descriptor {
         void *data;
 };
 
+struct mmvp_partition_header {
+        uint32_t size;
+        uint32_t version;
+        uint32_t counter;
+        uint32_t crc;
+};
+
 struct mmvp_partition {
         const struct mmvp_partition_descriptor *desc;
         struct mmvp_partition *next;
+
+        struct mmvp_partition_header device_header;
+        struct mmvp_partition_header local_header;
+
         int mirror_index;
-        uint32_t counter;
-        uint32_t crc;
+        bool write_enable;
 };
 
 typedef int (*mmvp_read_data)(uint8_t *data, uint32_t size_to_read, uint32_t *read_size);
@@ -66,7 +73,7 @@ struct mmvp_device_descriptor {
         mmvp_write_data write;
 
         uint32_t total_size;
-        uint32_t block_size;
+        uint32_t page_size;
 };
 
 struct mmvp_object {
@@ -74,10 +81,12 @@ struct mmvp_object {
         struct mmvp_partition *first;
 };
 
-void mmvp_init(struct mmvp_object *self, const struct mmvp_device_descriptor *device);
-void mmvp_register_partition(struct mmvp_object *self, struct mmvp_partition *partition, const struct mmvp_partition_descriptor *desc);
+mmvp_error mmvp_init(struct mmvp_object *self, const struct mmvp_device_descriptor *device);
+mmvp_error mmvp_register_partition(struct mmvp_object *self, struct mmvp_partition *partition, const struct mmvp_partition_descriptor *desc);
 mmvp_error mmvp_unregister_partition(struct mmvp_object *self, struct mmvp_partition *partition);
-void mmvp_start(struct mmvp_object *self);
+mmvp_error mmvp_start(struct mmvp_object *self);
+mmvp_error mmvp_confirm_write(struct mmvp_object *self);
+mmvp_error mmvp_service(struct mmvp_object *self);
 
 #ifdef __cplusplus
 }

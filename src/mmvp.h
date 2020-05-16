@@ -34,6 +34,7 @@ extern "C" {
 #include <stdbool.h>
 
 typedef enum {
+        MMVP_ERROR_PARTITION_NOT_EXIST = -2,
         MMVP_ERROR_GENERAL = -1,
         MMVP_ERROR_NO_ERROR = 0
 } mmvp_error;
@@ -44,6 +45,7 @@ typedef enum {
 } mmvp_partition_type;
 
 struct mmvp_partition_descriptor {
+        uint32_t address;
         uint32_t size;
         void *data;
 };
@@ -51,6 +53,9 @@ struct mmvp_partition_descriptor {
 struct mmvp_partition {
         const struct mmvp_partition_descriptor *desc;
         struct mmvp_partition *next;
+        int mirror_index;
+        uint32_t counter;
+        uint32_t crc;
 };
 
 typedef int (*mmvp_read_data)(uint8_t *data, uint32_t size_to_read, uint32_t *read_size);
@@ -70,6 +75,8 @@ struct mmvp_object {
 };
 
 mmvp_error mmvp_init(struct mmvp_object *self, const struct mmvp_device_descriptor *device);
+mmvp_error mmvp_register_partition(struct mmvp_object *self, struct mmvp_partition *partition, const struct mmvp_partition_descriptor *desc);
+mmvp_error mmvp_unregister_partition(struct mmvp_object *self, struct mmvp_partition *partition);
 
 #ifdef __cplusplus
 }

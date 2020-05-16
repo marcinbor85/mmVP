@@ -23,9 +23,10 @@ SOFTWARE.
 */
 
 #include "mmvp.h"
+#include "mmvp_utils.h"
 #include "mmvp_assert.h"
 
-#include <string.h>
+#include <stddef.h>
 
 mmvp_error mmvp_init(struct mmvp_controller *self, const struct mmvp_device_descriptor *device)
 {
@@ -53,7 +54,23 @@ mmvp_error mmvp_register_partition(struct mmvp_controller *self, struct mmvp_par
 
         mmvp_check_param(desc->data != NULL, MMVP_ERROR_NULL_POINTER);
         mmvp_check_param(desc->size > 0, MMVP_ERROR_WRONG_SIZE);
-        mmvp_check_param((desc->address % self->device->page_size) == 0, MMVP_ERROR_ADDRESS_PADDING);
+        mmvp_check_param((desc->address % self->device->page_size) == 0, MMVP_ERROR_ADDRESS_ALIGNMENT);
+
+        mmvp_check_param(mmvp_get_data_real_start_address(self->device->page_size, desc->address) + desc->size <= (self->device->total_size / 2), MMVP_ERROR_OUT_OF_MEMORY);
+
+        struct mmvp_partition *curr_part = self->first;
+        
+        while (curr_part != NULL) {
+                mmvp_check_param(partition != curr_part, MMVP_ERROR_PARTITION_EXIST);
+                mmvp_check_param(mmvp_is_regions_overlap(
+                        desc->address,
+                        mmvp_get_data_real_size(self->device->page_size, desc->address, desc->size),
+                        curr_part->desc->address,
+                        mmvp_get_data_real_size(self->device->page_size, curr_part->desc->address, curr_part->desc->size)
+                ) == false, MMVP_ERROR_PARTITION_OVERLAP);
+
+                curr_part = curr_part->next;
+        }
 
         partition->desc = desc;
         partition->next = self->first;
@@ -86,19 +103,7 @@ mmvp_error mmvp_unregister_partition(struct mmvp_controller *self, struct mmvp_p
         return MMVP_ERROR_PARTITION_NOT_EXIST;
 }
 
-uint32_t get_partition_data_start_address(struct mmvp_controller *self, struct mmvp_partition *partition)
-{
-        mmvp_check_param(self != NULL, MMVP_ERROR_NULL_POINTER);
-        mmvp_check_param(partition != NULL, MMVP_ERROR_NULL_POINTER);
-        
-        uint32_t adr;
-        uint32_t padding;
 
-        adr = partition->desc->address + sizeof(struct mmvp_partition_header);
-        padding = adr % self->device->page_size;
-
-        return adr + padding;
-}
 
 static void load_partition_data(struct mmvp_controller *self, struct mmvp_partition *partition)
 {

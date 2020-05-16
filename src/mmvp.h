@@ -30,13 +30,15 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include <stdio.h>
 #include <stdbool.h>
 
 typedef enum {
+        MMVP_ERROR_PARTITION_EXIST = -7,
+        MMVP_ERROR_PARTITION_OVERLAP = -6,
+        MMVP_ERROR_OUT_OF_MEMORY = -5,
         MMVP_ERROR_NULL_POINTER = -4,
         MMVP_ERROR_WRONG_SIZE = -3,
-        MMVP_ERROR_ADDRESS_PADDING = -2,
+        MMVP_ERROR_ADDRESS_ALIGNMENT = -2,
         MMVP_ERROR_PARTITION_NOT_EXIST = -1,
         MMVP_ERROR_OK = 0
 } mmvp_error;

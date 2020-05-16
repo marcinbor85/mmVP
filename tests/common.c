@@ -33,19 +33,19 @@ SOFTWARE.
 
 #include "common.h"
 
-static int read_block(uint8_t *data, uint32_t size_to_read, uint32_t *read_size)
+static int read_page(uint8_t *data, uint32_t size_to_read, uint32_t *read_size)
 {
         return 0;
 }
 
-static int write_block(uint8_t *data, uint32_t size_to_write, uint32_t *write_size)
+static int write_page(uint8_t *data, uint32_t size_to_write, uint32_t *write_size)
 {
         return 0;
 }
 
 static const struct mmvp_device_descriptor _test_device_descriptor = {
-        .read = read_block,
-        .write = write_block,
+        .read_page = read_page,
+        .write_page = write_page,
 
         .total_size = TEST_COMMON_DEVICE_MEMORY_TOTAL_SIZE,
         .page_size = TEST_COMMON_DEVICE_MEMORY_PAGE_SIZE

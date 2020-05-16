@@ -33,7 +33,7 @@ SOFTWARE.
 
 #include "common.h"
 
-static struct mmvp_object mmvp;
+static struct mmvp_controller mmvp;
 static struct mmvp_partition partition1;
 static struct mmvp_partition partition2;
 

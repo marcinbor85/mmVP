@@ -65,28 +65,28 @@ struct mmvp_partition {
         bool write_enable;
 };
 
-typedef int (*mmvp_read_data)(uint8_t *data, uint32_t size_to_read, uint32_t *read_size);
-typedef int (*mmvp_write_data)(uint8_t *data, uint32_t size_to_write, uint32_t *write_size);
+typedef int (*mmvp_read_page_handler)(uint8_t *data, uint32_t size_to_read, uint32_t *read_size);
+typedef int (*mmvp_write_page_handler)(uint8_t *data, uint32_t size_to_write, uint32_t *write_size);
 
 struct mmvp_device_descriptor {
-        mmvp_read_data read;
-        mmvp_write_data write;
+        mmvp_read_page_handler read_page;
+        mmvp_write_page_handler write_page;
 
         uint32_t total_size;
         uint32_t page_size;
 };
 
-struct mmvp_object {
+struct mmvp_controller {
         const struct mmvp_device_descriptor *device;
         struct mmvp_partition *first;
 };
 
-mmvp_error mmvp_init(struct mmvp_object *self, const struct mmvp_device_descriptor *device);
-mmvp_error mmvp_register_partition(struct mmvp_object *self, struct mmvp_partition *partition, const struct mmvp_partition_descriptor *desc);
-mmvp_error mmvp_unregister_partition(struct mmvp_object *self, struct mmvp_partition *partition);
-mmvp_error mmvp_start(struct mmvp_object *self);
-mmvp_error mmvp_confirm_write(struct mmvp_object *self);
-mmvp_error mmvp_service(struct mmvp_object *self);
+mmvp_error mmvp_init(struct mmvp_controller *self, const struct mmvp_device_descriptor *device);
+mmvp_error mmvp_register_partition(struct mmvp_controller *self, struct mmvp_partition *partition, const struct mmvp_partition_descriptor *desc);
+mmvp_error mmvp_unregister_partition(struct mmvp_controller *self, struct mmvp_partition *partition);
+mmvp_error mmvp_start(struct mmvp_controller *self);
+mmvp_error mmvp_confirm_write(struct mmvp_controller *self);
+mmvp_error mmvp_service(struct mmvp_controller *self);
 
 #ifdef __cplusplus
 }

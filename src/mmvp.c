@@ -27,13 +27,13 @@ SOFTWARE.
 
 #include <string.h>
 
-mmvp_error mmvp_init(struct mmvp_object *self, const struct mmvp_device_descriptor *device)
+mmvp_error mmvp_init(struct mmvp_controller *self, const struct mmvp_device_descriptor *device)
 {
         mmvp_check_param(self != NULL, MMVP_ERROR_NULL_POINTER);
         mmvp_check_param(device != NULL, MMVP_ERROR_NULL_POINTER);
 
-        mmvp_check_param(device->read != NULL, MMVP_ERROR_NULL_POINTER);
-        mmvp_check_param(device->write != NULL, MMVP_ERROR_NULL_POINTER);
+        mmvp_check_param(device->read_page != NULL, MMVP_ERROR_NULL_POINTER);
+        mmvp_check_param(device->write_page != NULL, MMVP_ERROR_NULL_POINTER);
         mmvp_check_param(device->page_size > 0, MMVP_ERROR_WRONG_SIZE);
         mmvp_check_param(device->total_size > 0, MMVP_ERROR_WRONG_SIZE);
 
@@ -45,7 +45,7 @@ mmvp_error mmvp_init(struct mmvp_object *self, const struct mmvp_device_descript
         return MMVP_ERROR_OK;
 }
 
-mmvp_error mmvp_register_partition(struct mmvp_object *self, struct mmvp_partition *partition, const struct mmvp_partition_descriptor *desc)
+mmvp_error mmvp_register_partition(struct mmvp_controller *self, struct mmvp_partition *partition, const struct mmvp_partition_descriptor *desc)
 {
         mmvp_check_param(self != NULL, MMVP_ERROR_NULL_POINTER);
         mmvp_check_param(partition != NULL, MMVP_ERROR_NULL_POINTER);
@@ -62,7 +62,7 @@ mmvp_error mmvp_register_partition(struct mmvp_object *self, struct mmvp_partiti
         return MMVP_ERROR_OK;
 }
 
-mmvp_error mmvp_unregister_partition(struct mmvp_object *self, struct mmvp_partition *partition)
+mmvp_error mmvp_unregister_partition(struct mmvp_controller *self, struct mmvp_partition *partition)
 {
         mmvp_check_param(self != NULL, MMVP_ERROR_NULL_POINTER);
         mmvp_check_param(partition != NULL, MMVP_ERROR_NULL_POINTER);
@@ -86,7 +86,7 @@ mmvp_error mmvp_unregister_partition(struct mmvp_object *self, struct mmvp_parti
         return MMVP_ERROR_PARTITION_NOT_EXIST;
 }
 
-uint32_t get_partition_data_start_address(struct mmvp_object *self, struct mmvp_partition *partition)
+uint32_t get_partition_data_start_address(struct mmvp_controller *self, struct mmvp_partition *partition)
 {
         mmvp_check_param(self != NULL, MMVP_ERROR_NULL_POINTER);
         mmvp_check_param(partition != NULL, MMVP_ERROR_NULL_POINTER);
@@ -100,13 +100,13 @@ uint32_t get_partition_data_start_address(struct mmvp_object *self, struct mmvp_
         return adr + padding;
 }
 
-static void load_partition_data(struct mmvp_object *self, struct mmvp_partition *partition)
+static void load_partition_data(struct mmvp_controller *self, struct mmvp_partition *partition)
 {
         (void)self;
         (void)partition;
 }
 
-mmvp_error mmvp_start(struct mmvp_object *self)
+mmvp_error mmvp_start(struct mmvp_controller *self)
 {
         mmvp_check_param(self != NULL, MMVP_ERROR_NULL_POINTER);
 

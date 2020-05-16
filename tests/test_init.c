@@ -33,7 +33,7 @@ SOFTWARE.
 
 #include "common.h"
 
-static struct mmvp_object mmvp;
+static struct mmvp_controller mmvp;
 
 static struct mmvp_device_descriptor device_descriptor;
 
@@ -55,12 +55,12 @@ int main(int argc, char **argv)
         assert(e == MMVP_ERROR_NULL_POINTER);
 
         prepare_test();
-        device_descriptor.read = NULL;
+        device_descriptor.read_page = NULL;
         e = mmvp_init(&mmvp, &device_descriptor);
         assert(e == MMVP_ERROR_NULL_POINTER);
 
         prepare_test();
-        device_descriptor.write = NULL;
+        device_descriptor.write_page = NULL;
         e = mmvp_init(&mmvp, &device_descriptor);
         assert(e == MMVP_ERROR_NULL_POINTER);
 

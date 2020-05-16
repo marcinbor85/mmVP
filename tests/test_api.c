@@ -75,22 +75,18 @@ int main(int argc, char **argv)
 
         mmvp_error e;
 
-        e = mmvp_init(&mmvp, &device);
-        assert(e == MMVP_ERROR_NO_ERROR);
+        mmvp_init(&mmvp, &device);
         assert(mmvp.first == NULL);
         assert(mmvp.device == &device);
 
         e = mmvp_unregister_partition(&mmvp, &partition1);
         assert(e == MMVP_ERROR_PARTITION_NOT_EXIST);
 
-        e = mmvp_register_partition(&mmvp, &partition1, &partition_descriptor1);
-        assert(e == MMVP_ERROR_NO_ERROR);
+        mmvp_register_partition(&mmvp, &partition1, &partition_descriptor1);
         assert(partition1.desc == &partition_descriptor1);
         assert(partition1.next == NULL);
         assert(mmvp.first == &partition1);
-
-        e = mmvp_register_partition(&mmvp, &partition2, &partition_descriptor2);
-        assert(e == MMVP_ERROR_NO_ERROR);
+        mmvp_register_partition(&mmvp, &partition2, &partition_descriptor2);
         assert(partition2.desc == &partition_descriptor2);
         assert(partition2.next == &partition1);
         assert(mmvp.first == &partition2);
@@ -99,22 +95,15 @@ int main(int argc, char **argv)
         assert(e == MMVP_ERROR_NO_ERROR);
         assert(partition2.next == NULL);
         assert(mmvp.first == &partition2);
-
         e = mmvp_unregister_partition(&mmvp, &partition2);
         assert(e == MMVP_ERROR_NO_ERROR);
         assert(mmvp.first == NULL);
 
-        e = mmvp_unregister_partition(&mmvp, &partition1);
-        assert(e == MMVP_ERROR_PARTITION_NOT_EXIST);
-
-        e = mmvp_register_partition(&mmvp, &partition1, &partition_descriptor1);
-        assert(e == MMVP_ERROR_NO_ERROR);
+        mmvp_register_partition(&mmvp, &partition1, &partition_descriptor1);
         assert(partition1.desc == &partition_descriptor1);
         assert(partition1.next == NULL);
         assert(mmvp.first == &partition1);
-
-        e = mmvp_register_partition(&mmvp, &partition2, &partition_descriptor2);
-        assert(e == MMVP_ERROR_NO_ERROR);
+        mmvp_register_partition(&mmvp, &partition2, &partition_descriptor2);
         assert(partition2.desc == &partition_descriptor2);
         assert(partition2.next == &partition1);
         assert(mmvp.first == &partition2);
@@ -123,7 +112,6 @@ int main(int argc, char **argv)
         assert(e == MMVP_ERROR_NO_ERROR);
         assert(partition1.next == NULL);
         assert(mmvp.first == &partition1);
-
         e = mmvp_unregister_partition(&mmvp, &partition1);
         assert(e == MMVP_ERROR_NO_ERROR);
         assert(mmvp.first == NULL);

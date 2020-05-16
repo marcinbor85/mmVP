@@ -74,9 +74,10 @@ struct mmvp_object {
         struct mmvp_partition *first;
 };
 
-mmvp_error mmvp_init(struct mmvp_object *self, const struct mmvp_device_descriptor *device);
-mmvp_error mmvp_register_partition(struct mmvp_object *self, struct mmvp_partition *partition, const struct mmvp_partition_descriptor *desc);
+void mmvp_init(struct mmvp_object *self, const struct mmvp_device_descriptor *device);
+void mmvp_register_partition(struct mmvp_object *self, struct mmvp_partition *partition, const struct mmvp_partition_descriptor *desc);
 mmvp_error mmvp_unregister_partition(struct mmvp_object *self, struct mmvp_partition *partition);
+void mmvp_start(struct mmvp_object *self);
 
 #ifdef __cplusplus
 }

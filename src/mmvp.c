@@ -27,7 +27,7 @@ SOFTWARE.
 #include <string.h>
 #include <assert.h>
 
-mmvp_error mmvp_init(struct mmvp_object *self, const struct mmvp_device_descriptor *device)
+void mmvp_init(struct mmvp_object *self, const struct mmvp_device_descriptor *device)
 {
         assert(self != NULL);
         assert(device != NULL);
@@ -39,11 +39,9 @@ mmvp_error mmvp_init(struct mmvp_object *self, const struct mmvp_device_descript
 
         self->device = device;
         self->first = NULL;
-
-        return MMVP_ERROR_NO_ERROR;
 }
 
-mmvp_error mmvp_register_partition(struct mmvp_object *self, struct mmvp_partition *partition, const struct mmvp_partition_descriptor *desc)
+void mmvp_register_partition(struct mmvp_object *self, struct mmvp_partition *partition, const struct mmvp_partition_descriptor *desc)
 {
         assert(self != NULL);
         assert(partition != NULL);
@@ -52,8 +50,6 @@ mmvp_error mmvp_register_partition(struct mmvp_object *self, struct mmvp_partiti
         partition->desc = desc;
         partition->next = self->first;
         self->first = partition;
-
-        return MMVP_ERROR_NO_ERROR;
 }
 
 mmvp_error mmvp_unregister_partition(struct mmvp_object *self, struct mmvp_partition *partition)
@@ -75,4 +71,13 @@ mmvp_error mmvp_unregister_partition(struct mmvp_object *self, struct mmvp_parti
         }
 
         return MMVP_ERROR_PARTITION_NOT_EXIST;
+}
+
+void mmvp_start(struct mmvp_object *self)
+{
+        struct mmvp_partition *curr_part = self->first;
+
+        while (curr_part != NULL) {
+                curr_part = curr_part->next;
+        }
 }

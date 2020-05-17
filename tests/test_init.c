@@ -46,12 +46,12 @@ int main(int argc, char **argv)
         assert(e == MMVP_ERROR_NULL_POINTER);
 
         prepare_test();
-        device_descriptor.read_page = NULL;
+        device_descriptor.read = NULL;
         e = mmvp_init(&mmvp, &device_descriptor);
         assert(e == MMVP_ERROR_NULL_POINTER);
 
         prepare_test();
-        device_descriptor.write_page = NULL;
+        device_descriptor.write = NULL;
         e = mmvp_init(&mmvp, &device_descriptor);
         assert(e == MMVP_ERROR_NULL_POINTER);
 
@@ -68,7 +68,22 @@ int main(int argc, char **argv)
         prepare_test();
         device_descriptor.total_size = device_descriptor.page_size - 1;
         e = mmvp_init(&mmvp, &device_descriptor);
-        assert(e == MMVP_ERROR_WRONG_SIZE);
+        assert(e == MMVP_ERROR_OUT_OF_MEMORY);
+
+        prepare_test();
+        device_descriptor.wear_leveling_factor = 3;
+        e = mmvp_init(&mmvp, &device_descriptor);
+        assert(e == MMVP_ERROR_WRONG_FACTOR);
+
+        prepare_test();
+        device_descriptor.wear_leveling_factor = 24;
+        e = mmvp_init(&mmvp, &device_descriptor);
+        assert(e == MMVP_ERROR_WRONG_FACTOR);
+
+        prepare_test();
+        device_descriptor.wear_leveling_factor = 8;
+        e = mmvp_init(&mmvp, &device_descriptor);
+        assert(e == MMVP_ERROR_OK);
 
         prepare_test();
         e = mmvp_init(&mmvp, &device_descriptor);

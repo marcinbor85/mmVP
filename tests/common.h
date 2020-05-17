@@ -38,8 +38,9 @@ extern "C" {
 #include "mmvp.h"
 #include "mmvp_utils.h"
 
-#define TEST_COMMON_DEVICE_MEMORY_TOTAL_SIZE    (8192UL)
-#define TEST_COMMON_DEVICE_MEMORY_PAGE_SIZE     (32UL)
+#define TEST_COMMON_DEVICE_MEMORY_TOTAL_SIZE            (8192UL)
+#define TEST_COMMON_DEVICE_MEMORY_PAGE_SIZE             (32UL)
+#define TEST_COMMON_DEVICE_MEMORY_WEAR_LEVELING_FACTOR  (2UL)
 
 extern const struct mmvp_device_descriptor *test_device_descriptor;
 

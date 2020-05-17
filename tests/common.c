@@ -24,22 +24,23 @@ SOFTWARE.
 
 #include "common.h"
 
-static int read_page(uint8_t *data, uint32_t size_to_read, uint32_t *read_size)
+static int read_page(uint32_t address, uint8_t *data, uint32_t size)
 {
-        return 0;
+        return size;
 }
 
-static int write_page(uint8_t *data, uint32_t size_to_write, uint32_t *write_size)
+static int write_page(uint32_t address, uint8_t *data, uint32_t size)
 {
-        return 0;
+        return size;
 }
 
 static const struct mmvp_device_descriptor _test_device_descriptor = {
-        .read_page = read_page,
-        .write_page = write_page,
+        .read = read_page,
+        .write = write_page,
 
         .total_size = TEST_COMMON_DEVICE_MEMORY_TOTAL_SIZE,
-        .page_size = TEST_COMMON_DEVICE_MEMORY_PAGE_SIZE
+        .page_size = TEST_COMMON_DEVICE_MEMORY_PAGE_SIZE,
+        .wear_leveling_factor = TEST_COMMON_DEVICE_MEMORY_WEAR_LEVELING_FACTOR
 };
 
 const struct mmvp_device_descriptor *test_device_descriptor = &_test_device_descriptor;

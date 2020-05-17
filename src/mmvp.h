@@ -33,6 +33,7 @@ extern "C" {
 #include <stdbool.h>
 
 typedef enum {
+        MMVP_ERROR_WRONG_FACTOR = -8,
         MMVP_ERROR_PARTITION_EXIST = -7,
         MMVP_ERROR_PARTITION_OVERLAP = -6,
         MMVP_ERROR_OUT_OF_MEMORY = -5,
@@ -67,15 +68,16 @@ struct mmvp_partition {
         bool write_enable;
 };
 
-typedef int (*mmvp_read_page_handler)(uint8_t *data, uint32_t size_to_read, uint32_t *read_size);
-typedef int (*mmvp_write_page_handler)(uint8_t *data, uint32_t size_to_write, uint32_t *write_size);
+typedef int (*mmvp_read_write_handler)(uint32_t address, uint8_t *data, uint32_t size);
 
 struct mmvp_device_descriptor {
-        mmvp_read_page_handler read_page;
-        mmvp_write_page_handler write_page;
+        mmvp_read_write_handler read;
+        mmvp_read_write_handler write;
 
         uint32_t total_size;
         uint32_t page_size;
+
+        int wear_leveling_factor;
 };
 
 struct mmvp_controller {

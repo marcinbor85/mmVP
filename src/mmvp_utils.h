@@ -35,6 +35,8 @@ extern "C" {
 uint32_t mmvp_get_data_real_start_address(uint32_t page_size, uint32_t address);
 uint32_t mmvp_get_data_real_size(uint32_t page_size, uint32_t address, uint32_t size);
 bool mmvp_is_regions_overlap(uint32_t adr1, uint32_t size1, uint32_t adr2, uint32_t size2);
+bool mmvp_is_power_of_two(uint32_t);
+uint32_t mmvp_get_mirror_size(uint32_t total_size, uint32_t wear_leveling_factor);
 
 #ifdef __cplusplus
 }

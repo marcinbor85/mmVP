@@ -62,7 +62,17 @@ int main(int argc, char **argv)
         assert(mmvp_get_data_real_size(32, 64, 12) == 44);
         assert(mmvp_get_data_real_size(64, 64, 12) == 76);
 
-        
+        assert(mmvp_is_power_of_two(0) == false);
+        assert(mmvp_is_power_of_two(1) == true);
+        assert(mmvp_is_power_of_two(2) == true);
+        assert(mmvp_is_power_of_two(3) == false);
+        assert(mmvp_is_power_of_two(4) == true);
+        assert(mmvp_is_power_of_two(6) == false);
+        assert(mmvp_is_power_of_two(8) == true);
+
+        assert(mmvp_get_mirror_size(64, 2) == 32);
+        assert(mmvp_get_mirror_size(128, 4) == 32);
+        assert(mmvp_get_mirror_size(256, 1) == 256);
 
 	return 0;
 }

@@ -33,12 +33,12 @@ mmvp_error mmvp_init(struct mmvp_controller *self, const struct mmvp_device_desc
         mmvp_check_param(self != NULL, MMVP_ERROR_NULL_POINTER);
         mmvp_check_param(device != NULL, MMVP_ERROR_NULL_POINTER);
 
-        mmvp_check_param(device->read_page != NULL, MMVP_ERROR_NULL_POINTER);
-        mmvp_check_param(device->write_page != NULL, MMVP_ERROR_NULL_POINTER);
+        mmvp_check_param(device->read != NULL, MMVP_ERROR_NULL_POINTER);
+        mmvp_check_param(device->write != NULL, MMVP_ERROR_NULL_POINTER);
         mmvp_check_param(device->page_size > 0, MMVP_ERROR_WRONG_SIZE);
         mmvp_check_param(device->total_size > 0, MMVP_ERROR_WRONG_SIZE);
-
-        mmvp_check_param(device->page_size <= device->total_size, MMVP_ERROR_WRONG_SIZE);
+        mmvp_check_param(mmvp_is_power_of_two(device->wear_leveling_factor) != false, MMVP_ERROR_WRONG_FACTOR);
+        mmvp_check_param(device->page_size <= mmvp_get_mirror_size(device->total_size, device->wear_leveling_factor), MMVP_ERROR_OUT_OF_MEMORY);
 
         self->device = device;
         self->first = NULL;
@@ -56,7 +56,7 @@ mmvp_error mmvp_register_partition(struct mmvp_controller *self, struct mmvp_par
         mmvp_check_param(desc->size > 0, MMVP_ERROR_WRONG_SIZE);
         mmvp_check_param((desc->address % self->device->page_size) == 0, MMVP_ERROR_ADDRESS_ALIGNMENT);
 
-        mmvp_check_param(mmvp_get_data_real_start_address(self->device->page_size, desc->address) + desc->size <= (self->device->total_size / 2), MMVP_ERROR_OUT_OF_MEMORY);
+        mmvp_check_param(mmvp_get_data_real_start_address(self->device->page_size, desc->address) + desc->size <= mmvp_get_mirror_size(self->device->total_size, self->device->wear_leveling_factor), MMVP_ERROR_OUT_OF_MEMORY);
 
         struct mmvp_partition *curr_part = self->first;
         

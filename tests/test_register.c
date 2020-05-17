@@ -115,6 +115,15 @@ int main(int argc, char **argv)
 
         prepare_test();
         device_descriptor.total_size = 128;
+        device_descriptor.page_size = 16;
+        device_descriptor.wear_leveling_factor = 4;
+        partition1_descriptor.address = 0;
+        partition1_descriptor.size = 32;
+        e = mmvp_register_partition(&mmvp, &partition1, &partition1_descriptor);
+        assert(e == MMVP_ERROR_OUT_OF_MEMORY);
+
+        prepare_test();
+        device_descriptor.total_size = 128;
         device_descriptor.page_size = 32;
         partition1_descriptor.address = 0;
         partition1_descriptor.size = 32;

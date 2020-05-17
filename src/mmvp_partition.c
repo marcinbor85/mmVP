@@ -174,5 +174,7 @@ void mmvp_load_partition_data(struct mmvp_controller *self, struct mmvp_partitio
 
         if (is_loaded == false) {
                 fill_local_data_with_defaults(self, partition);
+                partition->mirror_index = 0;
+                partition->local_crc = 0;
         }
 }

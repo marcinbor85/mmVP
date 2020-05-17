@@ -45,14 +45,13 @@ static const struct mmvp_device_descriptor _test_device_descriptor = {
 
 const struct mmvp_device_descriptor *test_device_descriptor = &_test_device_descriptor;
 
-static void restore_default(void *data, uint32_t size)
+static void restore_default1(void *data, uint32_t size)
 {
         uint8_t i;
         uint8_t *data_ptr = data;
 
-        while (size-- > 0) {
+        while (size-- > 0)
                 *data_ptr++ = i++;
-        }
 }
 
 static uint8_t data1[TEST_COMMON_PARTITION1_SIZE];
@@ -62,8 +61,17 @@ static const struct mmvp_partition_descriptor _test_partition1_descriptor = {
         .address = TEST_COMMON_PARTITION1_ADDRESS,
         .size = sizeof(data1),
         .data = data1,
-        .restore_default = restore_default
+        .restore_default = restore_default1
 };
+
+static void restore_default2(void *data, uint32_t size)
+{
+        uint8_t i;
+        uint8_t *data_ptr = data;
+
+        while (size-- > 0)
+                *data_ptr++ = i--;
+}
 
 static uint8_t data2[TEST_COMMON_PARTITION2_SIZE];
 
@@ -72,7 +80,7 @@ static const struct mmvp_partition_descriptor _test_partition2_descriptor = {
         .address = TEST_COMMON_PARTITION2_ADDRESS,
         .size = sizeof(data2),
         .data = data2,
-        .restore_default = restore_default
+        .restore_default = restore_default2
 };
 
 const struct mmvp_partition_descriptor *test_partition1_descriptor = &_test_partition1_descriptor;

@@ -27,6 +27,7 @@ SOFTWARE.
 #include "mmvp_assert.h"
 
 #include <stddef.h>
+#include <string.h>
 #include <assert.h>
 
 mmvp_error mmvp_init(struct mmvp_controller *self, const struct mmvp_device_descriptor *device)
@@ -75,6 +76,12 @@ mmvp_error mmvp_register_partition(struct mmvp_controller *self, struct mmvp_par
 
         partition->desc = desc;
         partition->next = self->first;
+        partition->write_enable = false;
+        partition->mirror_index = 0;
+        partition->local_crc = 0;
+        partition->dirty = false;
+        memset((uint8_t*)&partition->header, 0x00, MMVP_PARTITION_HEADER_SIZE);
+
         self->first = partition;
 
         return MMVP_ERROR_OK;

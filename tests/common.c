@@ -45,9 +45,9 @@ static const struct mmvp_device_descriptor _test_device_descriptor = {
 
 const struct mmvp_device_descriptor *test_device_descriptor = &_test_device_descriptor;
 
-static void restore_default1(void *data, uint32_t size)
+static void restore_default1(void *data, uint32_t size, bool dirty)
 {
-        uint8_t i;
+        uint8_t i = (dirty == false) ? 0 : 0x10;
         uint8_t *data_ptr = data;
 
         while (size-- > 0)
@@ -64,9 +64,9 @@ static const struct mmvp_partition_descriptor _test_partition1_descriptor = {
         .restore_default = restore_default1
 };
 
-static void restore_default2(void *data, uint32_t size)
+static void restore_default2(void *data, uint32_t size, bool dirty)
 {
-        uint8_t i;
+        uint8_t i = (dirty == false) ? 0 : 0x10;
         uint8_t *data_ptr = data;
 
         while (size-- > 0)

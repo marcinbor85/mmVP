@@ -97,8 +97,8 @@ static uint32_t read_data_and_check_crc_partition(struct mmvp_controller *self, 
                         chunk_size = self->device->page_size;
                 
                 i = self->device->read(adr, buf, chunk_size);
-                if ((uint32_t)i != chunk_size)
-                        return crc;
+                if ((uint32_t)i != chunk_size) 
+                        break;
                 
                 crc = mmvp_get_crc32(crc, buf, chunk_size);
                 act_size += chunk_size;
@@ -112,6 +112,7 @@ static uint32_t read_data_and_check_crc_partition(struct mmvp_controller *self, 
                 copy_act_size += chunk_size;
         }
 
+        partition->local_crc = crc;
         return crc;
 }
 
@@ -144,6 +145,9 @@ static bool load_latest_valid_mirror(struct mmvp_controller *self, struct mmvp_p
                         continue;
                 }
 
+                if (partition->header.size != partition->desc->size)
+                        partition->dirty = true;
+
                 return true;
         }
 
@@ -158,7 +162,7 @@ static void fill_local_data_with_defaults(struct mmvp_controller *self, struct m
         if (partition->desc->restore_default == NULL) {
                 memset(partition->desc->data, MMVP_PARTITION_MEMORY_DEFAULT_BYTE_VALUE, partition->desc->size);
         } else {
-                partition->desc->restore_default(partition->desc->data, partition->desc->size);
+                partition->desc->restore_default(partition->desc->data, partition->desc->size, partition->dirty);
         }
 }
 
@@ -176,5 +180,6 @@ void mmvp_load_partition_data(struct mmvp_controller *self, struct mmvp_partitio
                 fill_local_data_with_defaults(self, partition);
                 partition->mirror_index = 0;
                 partition->local_crc = 0;
+                partition->dirty = true;
         }
 }

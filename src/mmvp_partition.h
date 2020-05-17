@@ -38,7 +38,7 @@ extern "C" {
 #define MMVP_PARTITION_MEMORY_DEFAULT_BYTE_VALUE    (0x00)
 #define MMVP_PARTITION_CRC_INIT_VALUE               (0xFFFFFFFFUL)
 
-typedef void (*mmvp_partition_restore_default_handler)(void *data, uint32_t size);
+typedef void (*mmvp_partition_restore_default_handler)(void *data, uint32_t size, bool dirty);
 
 struct mmvp_partition_descriptor {
         uint32_t version;
@@ -65,6 +65,7 @@ struct mmvp_partition {
         uint32_t local_crc;
         int mirror_index;
         bool write_enable;
+        bool dirty;
 };
 
 void mmvp_load_partition_data(struct mmvp_controller *self, struct mmvp_partition *partition);

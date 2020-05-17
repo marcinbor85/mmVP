@@ -183,6 +183,18 @@ int main(int argc, char **argv)
         assert(e == MMVP_ERROR_PARTITION_OVERLAP);
 
         prepare_test();
+        memset((uint8_t*)&partition1, 0xFF, sizeof(partition1));
+        e = mmvp_register_partition(&mmvp, &partition1, &partition1_descriptor);
+        assert(e == MMVP_ERROR_OK);
+        assert(partition1.dirty == false);
+        assert(partition1.local_crc == 0);
+        assert(partition1.mirror_index == 0);
+        assert(partition1.header.counter == 0);
+        assert(partition1.header.crc == 0);
+        assert(partition1.header.size == 0);
+        assert(partition1.header.version == 0);
+
+        prepare_test();
         e = mmvp_register_partition(&mmvp, &partition1, &partition1_descriptor);
         assert(e == MMVP_ERROR_OK);
         assert(partition1.desc == &partition1_descriptor);

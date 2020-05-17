@@ -54,12 +54,12 @@ int main(int argc, char **argv)
         prepare_test();
         e = mmvp_start(&mmvp);
         assert(e == MMVP_ERROR_OK);
-        assert(((uint8_t*)partition1_descriptor.data)[0] == 0x00);
-        assert(((uint8_t*)partition1_descriptor.data)[1] == 0x01);
-        assert(((uint8_t*)partition1_descriptor.data)[2] == 0x02);
-        assert(((uint8_t*)partition2_descriptor.data)[0] == 0x00);
-        assert(((uint8_t*)partition2_descriptor.data)[1] == 0xFF);
-        assert(((uint8_t*)partition2_descriptor.data)[2] == 0xFE);
+        assert(((uint8_t*)partition1.desc->data)[0] == 0x00);
+        assert(((uint8_t*)partition1.desc->data)[1] == 0x01);
+        assert(((uint8_t*)partition1.desc->data)[2] == 0x02);
+        assert(((uint8_t*)partition2.desc->data)[0] == 0x00);
+        assert(((uint8_t*)partition2.desc->data)[1] == 0xFF);
+        assert(((uint8_t*)partition2.desc->data)[2] == 0xFE);
 
 	return 0;
 }

@@ -74,5 +74,67 @@ int main(int argc, char **argv)
         assert(mmvp_get_mirror_size(128, 4) == 32);
         assert(mmvp_get_mirror_size(256, 1) == 256);
 
+        int array_int[4];
+
+        array_int[0] = 0;
+        array_int[1] = 1;
+        array_int[2] = 2;
+        array_int[3] = 3;
+
+        assert(mmvp_is_num_in_array(0, array_int, 4) == true);
+        assert(mmvp_is_num_in_array(1, array_int, 4) == true);
+        assert(mmvp_is_num_in_array(2, array_int, 4) == true);
+        assert(mmvp_is_num_in_array(3, array_int, 4) == true);
+
+        assert(mmvp_is_num_in_array(0, array_int, 3) == true);
+        assert(mmvp_is_num_in_array(1, array_int, 3) == true);
+        assert(mmvp_is_num_in_array(2, array_int, 3) == true);
+        assert(mmvp_is_num_in_array(3, array_int, 3) == false);
+
+        assert(mmvp_is_num_in_array(0, array_int, 2) == true);
+        assert(mmvp_is_num_in_array(1, array_int, 2) == true);
+        assert(mmvp_is_num_in_array(2, array_int, 2) == false);
+        assert(mmvp_is_num_in_array(3, array_int, 2) == false);
+
+        assert(mmvp_is_num_in_array(0, array_int, 1) == true);
+        assert(mmvp_is_num_in_array(1, array_int, 1) == false);
+        assert(mmvp_is_num_in_array(2, array_int, 1) == false);
+        assert(mmvp_is_num_in_array(3, array_int, 1) == false);
+
+        assert(mmvp_is_num_in_array(0, array_int, 0) == false);
+        assert(mmvp_is_num_in_array(1, array_int, 0) == false);
+        assert(mmvp_is_num_in_array(2, array_int, 0) == false);
+        assert(mmvp_is_num_in_array(3, array_int, 0) == false);
+
+        uint8_t array_uint8[8];
+
+        assert(mmvp_get_crc32(0, array_uint8, 0) == 0x00000000);
+        assert(mmvp_get_crc32(0xFFFFFFFF, array_uint8, 0) == 0xFFFFFFFF);
+
+        array_uint8[0] = 0x78;
+        array_uint8[1] = 0x56;
+        array_uint8[2] = 0x34;
+        array_uint8[3] = 0x12;
+
+        assert(mmvp_get_crc32(0, array_uint8, 1) == 0xC6BCF05F);
+        assert(mmvp_get_crc32(0, array_uint8, 2) == 0x99ED649E);
+        assert(mmvp_get_crc32(0, array_uint8, 3) == 0x2D864EDD);
+        assert(mmvp_get_crc32(0, array_uint8, 4) == 0x6A330D2D);
+
+        array_uint8[0] = 0x00;
+        array_uint8[1] = 0x01;
+        array_uint8[2] = 0x02;
+        array_uint8[3] = 0x03;
+
+        assert(mmvp_get_crc32(0, array_uint8, 1) == 0x00000000);
+        assert(mmvp_get_crc32(0, array_uint8, 2) == 0x04C11DB7);
+        assert(mmvp_get_crc32(0, array_uint8, 3) == 0xDB9BFAB2);
+        assert(mmvp_get_crc32(0, array_uint8, 4) == 0xAC691451);
+
+        assert(mmvp_get_crc32(0xFFFFFFFF, array_uint8, 1) == 0x4E08BFB4);
+        assert(mmvp_get_crc32(0xFFFFFFFF, array_uint8, 2) == 0x047679CA);
+        assert(mmvp_get_crc32(0xFFFFFFFF, array_uint8, 3) == 0x6CFF87B2);
+        assert(mmvp_get_crc32(0xFFFFFFFF, array_uint8, 4) == 0x6B6DC92A);
+
 	return 0;
 }

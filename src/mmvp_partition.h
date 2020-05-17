@@ -22,27 +22,55 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef MMVP_H
-#define MMVP_H
+#ifndef MMVP_PARTITION_H
+#define MMVP_PARTITION_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "mmvp_partition.h"
-#include "mmvp_device.h"
-#include "mmvp_controller.h"
-#include "mmvp_error.h"
+#include <stdint.h>
+#include <stdbool.h>
 
-mmvp_error mmvp_init(struct mmvp_controller *self, const struct mmvp_device_descriptor *device);
-mmvp_error mmvp_register_partition(struct mmvp_controller *self, struct mmvp_partition *partition, const struct mmvp_partition_descriptor *desc);
-mmvp_error mmvp_unregister_partition(struct mmvp_controller *self, struct mmvp_partition *partition);
-mmvp_error mmvp_start(struct mmvp_controller *self);
-mmvp_error mmvp_confirm_write(struct mmvp_controller *self);
-mmvp_error mmvp_service(struct mmvp_controller *self);
+#include "mmvp_controller.h"
+
+#define MMVP_PARTITION_HEADER_SIZE                  ((uint32_t)(sizeof(struct mmvp_partition_header)))
+#define MMVP_PARTITION_MEMORY_DEFAULT_BYTE_VALUE    (0x00)
+#define MMVP_PARTITION_CRC_INIT_VALUE               (0xFFFFFFFFUL)
+
+typedef void (*mmvp_partition_restore_default_handler)(void *data, uint32_t size);
+
+struct mmvp_partition_descriptor {
+        uint32_t version;
+        uint32_t address;
+        uint32_t size;
+        void *data;
+
+        mmvp_partition_restore_default_handler restore_default;
+};
+
+struct mmvp_partition_header {
+        uint32_t size;
+        uint32_t version;
+        uint32_t counter;
+        uint32_t crc;
+};
+
+struct mmvp_partition {
+        const struct mmvp_partition_descriptor *desc;
+        struct mmvp_partition *next;
+
+        struct mmvp_partition_header header;
+
+        uint32_t local_crc;
+        int mirror_index;
+        bool write_enable;
+};
+
+void mmvp_load_partition_data(struct mmvp_controller *self, struct mmvp_partition *partition);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* MMVP_H */
+#endif /* MMVP_PARTITION_H */

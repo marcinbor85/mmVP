@@ -44,9 +44,11 @@ extern "C" {
 
 extern const struct mmvp_device_descriptor *test_device_descriptor;
 
+#define TEST_COMMON_PARTITION1_VERSION          (1UL)
 #define TEST_COMMON_PARTITION1_SIZE             (256UL)
 #define TEST_COMMON_PARTITION1_ADDRESS          (0x0000UL)
 
+#define TEST_COMMON_PARTITION2_VERSION          (1UL)
 #define TEST_COMMON_PARTITION2_SIZE             (512UL)
 #define TEST_COMMON_PARTITION2_ADDRESS          (0x0800UL)
 

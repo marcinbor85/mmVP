@@ -22,27 +22,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef MMVP_H
-#define MMVP_H
+#ifndef MMVP_ERROR_H
+#define MMVP_ERROR_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "mmvp_partition.h"
-#include "mmvp_device.h"
-#include "mmvp_controller.h"
-#include "mmvp_error.h"
-
-mmvp_error mmvp_init(struct mmvp_controller *self, const struct mmvp_device_descriptor *device);
-mmvp_error mmvp_register_partition(struct mmvp_controller *self, struct mmvp_partition *partition, const struct mmvp_partition_descriptor *desc);
-mmvp_error mmvp_unregister_partition(struct mmvp_controller *self, struct mmvp_partition *partition);
-mmvp_error mmvp_start(struct mmvp_controller *self);
-mmvp_error mmvp_confirm_write(struct mmvp_controller *self);
-mmvp_error mmvp_service(struct mmvp_controller *self);
+typedef enum {
+        MMVP_ERROR_WRONG_FACTOR = -8,
+        MMVP_ERROR_PARTITION_EXIST = -7,
+        MMVP_ERROR_PARTITION_OVERLAP = -6,
+        MMVP_ERROR_OUT_OF_MEMORY = -5,
+        MMVP_ERROR_NULL_POINTER = -4,
+        MMVP_ERROR_WRONG_SIZE = -3,
+        MMVP_ERROR_ADDRESS_ALIGNMENT = -2,
+        MMVP_ERROR_PARTITION_NOT_EXIST = -1,
+        MMVP_ERROR_OK = 0
+} mmvp_error;
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* MMVP_H */
+#endif /* MMVP_ERROR_H */

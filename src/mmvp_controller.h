@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef MMVP_H
-#define MMVP_H
+#ifndef MMVP_CONTROLLER_H
+#define MMVP_CONTROLLER_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -31,18 +31,15 @@ extern "C" {
 
 #include "mmvp_partition.h"
 #include "mmvp_device.h"
-#include "mmvp_controller.h"
-#include "mmvp_error.h"
 
-mmvp_error mmvp_init(struct mmvp_controller *self, const struct mmvp_device_descriptor *device);
-mmvp_error mmvp_register_partition(struct mmvp_controller *self, struct mmvp_partition *partition, const struct mmvp_partition_descriptor *desc);
-mmvp_error mmvp_unregister_partition(struct mmvp_controller *self, struct mmvp_partition *partition);
-mmvp_error mmvp_start(struct mmvp_controller *self);
-mmvp_error mmvp_confirm_write(struct mmvp_controller *self);
-mmvp_error mmvp_service(struct mmvp_controller *self);
+struct mmvp_controller {
+        const struct mmvp_device_descriptor *device;
+        struct mmvp_partition *first;
+};
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* MMVP_H */
+#endif /* MMVP_CONTROLLER_H */
+

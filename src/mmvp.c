@@ -27,6 +27,7 @@ SOFTWARE.
 #include "mmvp_assert.h"
 
 #include <stddef.h>
+#include <assert.h>
 
 mmvp_error mmvp_init(struct mmvp_controller *self, const struct mmvp_device_descriptor *device)
 {
@@ -103,14 +104,6 @@ mmvp_error mmvp_unregister_partition(struct mmvp_controller *self, struct mmvp_p
         return MMVP_ERROR_PARTITION_NOT_EXIST;
 }
 
-
-
-static void load_partition_data(struct mmvp_controller *self, struct mmvp_partition *partition)
-{
-        (void)self;
-        (void)partition;
-}
-
 mmvp_error mmvp_start(struct mmvp_controller *self)
 {
         mmvp_check_param(self != NULL, MMVP_ERROR_NULL_POINTER);
@@ -118,7 +111,7 @@ mmvp_error mmvp_start(struct mmvp_controller *self)
         struct mmvp_partition *curr_part = self->first;
 
         while (curr_part != NULL) {
-                load_partition_data(self, curr_part);
+                mmvp_load_partition_data(self, curr_part);
 
                 curr_part = curr_part->next;
         }

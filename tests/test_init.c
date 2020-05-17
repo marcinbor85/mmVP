@@ -68,6 +68,16 @@ int main(int argc, char **argv)
         prepare_test();
         device_descriptor.total_size = device_descriptor.page_size - 1;
         e = mmvp_init(&mmvp, &device_descriptor);
+        assert(e == MMVP_ERROR_WRONG_SIZE);
+
+        prepare_test();
+        device_descriptor.total_size = device_descriptor.page_size;
+        e = mmvp_init(&mmvp, &device_descriptor);
+        assert(e == MMVP_ERROR_OUT_OF_MEMORY);
+
+        prepare_test();
+        device_descriptor.total_size = device_descriptor.page_size / 2;
+        e = mmvp_init(&mmvp, &device_descriptor);
         assert(e == MMVP_ERROR_OUT_OF_MEMORY);
 
         prepare_test();

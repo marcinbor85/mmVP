@@ -37,8 +37,8 @@ mmvp_error mmvp_init(struct mmvp_controller *self, const struct mmvp_device_desc
 
         mmvp_check_param(device->read != NULL, MMVP_ERROR_NULL_POINTER);
         mmvp_check_param(device->write != NULL, MMVP_ERROR_NULL_POINTER);
-        mmvp_check_param(device->page_size > 0, MMVP_ERROR_WRONG_SIZE);
-        mmvp_check_param(device->total_size > 0, MMVP_ERROR_WRONG_SIZE);
+        mmvp_check_param(mmvp_is_power_of_two(device->page_size) != false, MMVP_ERROR_WRONG_SIZE);
+        mmvp_check_param(mmvp_is_power_of_two(device->total_size) != false, MMVP_ERROR_WRONG_SIZE);
         mmvp_check_param(mmvp_is_power_of_two(device->wear_leveling_factor) != false, MMVP_ERROR_WRONG_FACTOR);
         mmvp_check_param(device->page_size <= mmvp_get_mirror_size(device->total_size, device->wear_leveling_factor), MMVP_ERROR_OUT_OF_MEMORY);
 

@@ -84,5 +84,8 @@ bool mmvp_is_power_of_two(uint32_t num)
 
 uint32_t mmvp_get_mirror_size(uint32_t total_size, uint32_t wear_leveling_factor)
 {
+        assert(total_size > 0);
+        assert(wear_leveling_factor > 0);
+        
         return total_size / wear_leveling_factor;
 }

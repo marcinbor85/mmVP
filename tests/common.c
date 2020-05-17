@@ -24,13 +24,18 @@ SOFTWARE.
 
 #include "common.h"
 
+static uint8_t _test_device_memory_data[TEST_COMMON_DEVICE_MEMORY_TOTAL_SIZE];
+uint8_t *test_device_memory_data = _test_device_memory_data;
+
 static int read_page(uint32_t address, uint8_t *data, uint32_t size)
 {
+        memcpy(data, &_test_device_memory_data[address], size);
         return size;
 }
 
 static int write_page(uint32_t address, uint8_t *data, uint32_t size)
 {
+        memcpy(&_test_device_memory_data[address], data, size);
         return size;
 }
 
@@ -85,3 +90,60 @@ static const struct mmvp_partition_descriptor _test_partition2_descriptor = {
 
 const struct mmvp_partition_descriptor *test_partition1_descriptor = &_test_partition1_descriptor;
 const struct mmvp_partition_descriptor *test_partition2_descriptor = &_test_partition2_descriptor;
+
+void test_common_print_hex_buf(uint8_t *buf, uint32_t size)
+{
+        uint8_t cntr = 0;
+
+        while (size-- > 0) {
+                printf("%02X ", *buf++);
+                cntr %= 16;
+                if ((++cntr % 16) == 0)
+                        printf("\n");
+        }
+}
+
+void test_common_prepare_device_memory(void)
+{
+        struct mmvp_partition_header *header; 
+        uint8_t* data;
+        uint32_t adr;
+
+        memset(_test_device_memory_data, 0x00, TEST_COMMON_DEVICE_MEMORY_TOTAL_SIZE);
+
+        adr = TEST_COMMON_PARTITION1_ADDRESS;
+        header = (struct mmvp_partition_header*)&_test_device_memory_data[adr];
+        data = &_test_device_memory_data[mmvp_get_data_real_start_address(TEST_COMMON_DEVICE_MEMORY_PAGE_SIZE, adr)];
+        
+        data[0] = 0xDE;
+        data[1] = 0xAD;
+        data[2] = 0xBE;
+        data[3] = 0xEF;
+        data[TEST_COMMON_PARTITION1_SIZE - 4] = 0xCA;
+        data[TEST_COMMON_PARTITION1_SIZE - 3] = 0xFE;
+        data[TEST_COMMON_PARTITION1_SIZE - 2] = 0xBA;
+        data[TEST_COMMON_PARTITION1_SIZE - 1] = 0xBE;
+
+        header->counter = 0x00000001;
+        header->size = TEST_COMMON_PARTITION1_SIZE;
+        header->version = TEST_COMMON_PARTITION1_VERSION;
+        header->crc = mmvp_get_crc32(MMVP_PARTITION_CRC_INIT_VALUE, data, TEST_COMMON_PARTITION1_SIZE);
+
+        adr = TEST_COMMON_PARTITION2_ADDRESS + TEST_COMMON_DEVICE_MEMORY_TOTAL_SIZE / TEST_COMMON_DEVICE_MEMORY_WEAR_LEVELING_FACTOR;
+        header = (struct mmvp_partition_header*)&_test_device_memory_data[adr];
+        data = &_test_device_memory_data[mmvp_get_data_real_start_address(TEST_COMMON_DEVICE_MEMORY_PAGE_SIZE, adr)];
+
+        data[0] = 0xBA;
+        data[1] = 0xAD;
+        data[2] = 0xC0;
+        data[3] = 0xDE;
+        data[TEST_COMMON_PARTITION2_SIZE - 4] = 0xBA;
+        data[TEST_COMMON_PARTITION2_SIZE - 3] = 0xBE;
+        data[TEST_COMMON_PARTITION2_SIZE - 2] = 0xFA;
+        data[TEST_COMMON_PARTITION2_SIZE - 1] = 0xCE;
+
+        header->counter = 0x00000001;
+        header->size = TEST_COMMON_PARTITION2_SIZE;
+        header->version = TEST_COMMON_PARTITION2_VERSION;
+        header->crc = mmvp_get_crc32(MMVP_PARTITION_CRC_INIT_VALUE, data, TEST_COMMON_PARTITION2_SIZE);
+}

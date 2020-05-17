@@ -39,6 +39,8 @@ static int find_mirror_with_highest_counter(struct mmvp_controller *self, struct
         uint32_t adr;
         uint32_t mirror_size;
 
+        struct mmvp_partition_header header;
+
         assert(self != NULL);
         assert(partition != NULL);
         assert(mirrors_error != NULL);
@@ -53,15 +55,17 @@ static int find_mirror_with_highest_counter(struct mmvp_controller *self, struct
 
                 adr = partition->desc->address + m * mirror_size;
 
-                i = self->device->read(adr, (uint8_t*)&partition->header, MMVP_PARTITION_HEADER_SIZE);
+                i = self->device->read(adr, (uint8_t*)&header, MMVP_PARTITION_HEADER_SIZE);
                 if (i != MMVP_PARTITION_HEADER_SIZE)
                         continue;
 
-                if (partition->header.counter > cntr)
+                if (header.counter > cntr) {
+                        memcpy((uint8_t*)&partition->header, (uint8_t*)&header, MMVP_PARTITION_HEADER_SIZE);
+                        partition->mirror_index = m;
                         mirror_index = m;
+                }
         }
 
-        partition->mirror_index = mirror_index;
         return mirror_index;
 }
 
@@ -96,7 +100,7 @@ static uint32_t read_data_and_check_crc_partition(struct mmvp_controller *self, 
                 if (chunk_size > self->device->page_size)
                         chunk_size = self->device->page_size;
                 
-                i = self->device->read(adr, buf, chunk_size);
+                i = self->device->read(adr + act_size, buf, chunk_size);
                 if ((uint32_t)i != chunk_size) 
                         break;
                 
@@ -107,7 +111,7 @@ static uint32_t read_data_and_check_crc_partition(struct mmvp_controller *self, 
                 if (chunk_size > self->device->page_size)
                         chunk_size = self->device->page_size;
 
-                memcpy(partition->desc->data, buf, chunk_size);
+                memcpy(&((uint8_t*)partition->desc->data)[copy_act_size], buf, chunk_size);
 
                 copy_act_size += chunk_size;
         }

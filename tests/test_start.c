@@ -57,9 +57,26 @@ int main(int argc, char **argv)
         assert(((uint8_t*)partition1.desc->data)[0] == 0x00);
         assert(((uint8_t*)partition1.desc->data)[1] == 0x01);
         assert(((uint8_t*)partition1.desc->data)[2] == 0x02);
+        assert(partition1.dirty == true);
+        assert(partition1.local_crc == 0);
+        assert(partition1.mirror_index == 0);
         assert(((uint8_t*)partition2.desc->data)[0] == 0x00);
         assert(((uint8_t*)partition2.desc->data)[1] == 0xFF);
         assert(((uint8_t*)partition2.desc->data)[2] == 0xFE);
+        assert(partition2.dirty == true);
+        assert(partition2.local_crc == 0);
+        assert(partition2.mirror_index == 0);
+
+        test_common_prepare_device_memory();
+        prepare_test();
+        e = mmvp_start(&mmvp);
+        assert(e == MMVP_ERROR_OK);
+        assert(memcmp((uint8_t*)partition1.desc->data, &test_device_memory_data[mmvp_get_data_real_start_address(TEST_COMMON_DEVICE_MEMORY_PAGE_SIZE, TEST_COMMON_PARTITION1_ADDRESS)], TEST_COMMON_PARTITION1_SIZE) == 0);
+        assert(partition1.dirty == false);
+        assert(partition1.mirror_index == 0);
+        assert(memcmp((uint8_t*)partition2.desc->data, &test_device_memory_data[mmvp_get_data_real_start_address(TEST_COMMON_DEVICE_MEMORY_PAGE_SIZE, TEST_COMMON_PARTITION2_ADDRESS + TEST_COMMON_DEVICE_MEMORY_TOTAL_SIZE / TEST_COMMON_DEVICE_MEMORY_WEAR_LEVELING_FACTOR)], TEST_COMMON_PARTITION2_SIZE) == 0);
+        assert(partition2.dirty == false);
+        assert(partition2.mirror_index == 1);
 
 	return 0;
 }

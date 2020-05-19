@@ -35,7 +35,7 @@ extern "C" {
 uint32_t mmvp_get_data_real_start_address(uint32_t page_size, uint32_t address);
 uint32_t mmvp_get_data_real_size(uint32_t page_size, uint32_t address, uint32_t size);
 bool mmvp_is_regions_overlap(uint32_t adr1, uint32_t size1, uint32_t adr2, uint32_t size2);
-bool mmvp_is_power_of_two(uint32_t);
+bool mmvp_is_power_of_two(uint32_t num);
 uint32_t mmvp_get_mirror_size(uint32_t total_size, uint32_t wear_leveling_factor);
 bool mmvp_is_num_in_array(int num, int *array, int array_size);
 uint32_t mmvp_get_crc32(uint32_t init, uint8_t *data, uint32_t size);

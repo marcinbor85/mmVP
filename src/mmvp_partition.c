@@ -60,6 +60,7 @@ static int find_mirror_with_highest_counter(struct mmvp_controller *self, struct
                         continue;
 
                 if (header.counter > cntr) {
+                        cntr = header.counter;
                         memcpy((uint8_t*)&partition->header, (uint8_t*)&header, MMVP_PARTITION_HEADER_SIZE);
                         partition->mirror_index = m;
                         mirror_index = m;
@@ -170,7 +171,7 @@ static void fill_local_data_with_defaults(struct mmvp_controller *self, struct m
         }
 }
 
-void mmvp_load_partition_data(struct mmvp_controller *self, struct mmvp_partition *partition)
+void _mmvp_load_partition_data(struct mmvp_controller *self, struct mmvp_partition *partition)
 {
         bool is_loaded;
 

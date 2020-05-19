@@ -68,7 +68,7 @@ struct mmvp_partition {
         bool dirty;
 };
 
-void mmvp_load_partition_data(struct mmvp_controller *self, struct mmvp_partition *partition);
+void _mmvp_load_partition_data(struct mmvp_controller *self, struct mmvp_partition *partition);
 
 #ifdef __cplusplus
 }

@@ -39,6 +39,7 @@ mmvp_error mmvp_register_partition(struct mmvp_controller *self, struct mmvp_par
 mmvp_error mmvp_unregister_partition(struct mmvp_controller *self, struct mmvp_partition *partition);
 mmvp_error mmvp_start(struct mmvp_controller *self);
 mmvp_error mmvp_confirm_write(struct mmvp_controller *self);
+mmvp_error mmvp_confirm_read(struct mmvp_controller *self, uint32_t address, uint8_t *data, uint32_t size);
 mmvp_error mmvp_service(struct mmvp_controller *self);
 
 #ifdef __cplusplus

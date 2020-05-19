@@ -58,7 +58,6 @@ extern const struct mmvp_partition_descriptor *test_partition2_descriptor;
 
 extern uint8_t *test_device_memory_data;
 
-void test_common_prepare_device_memory(void);
 void test_common_print_hex_buf(uint8_t *buf, uint32_t size);
 
 #ifdef __cplusplus

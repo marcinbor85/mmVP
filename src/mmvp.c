@@ -118,7 +118,7 @@ mmvp_error mmvp_start(struct mmvp_controller *self)
         struct mmvp_partition *curr_part = self->first;
 
         while (curr_part != NULL) {
-                mmvp_load_partition_data(self, curr_part);
+                _mmvp_load_partition_data(self, curr_part);
 
                 curr_part = curr_part->next;
         }

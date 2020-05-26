@@ -46,9 +46,9 @@ static int find_mirror_with_highest_counter(struct mmvp_controller *self, struct
         assert(mirrors_error != NULL);
         assert(mirrors_error_num >= 0);
 
-        mirror_size = mmvp_get_mirror_size(self->device->total_size, self->device->wear_leveling_factor);
+        mirror_size = mmvp_get_mirror_size(self->device->total_size, self->config->wear_leveling_factor);
 
-        for (m = 0; m < self->device->wear_leveling_factor; m++) {
+        for (m = 0; m < self->config->wear_leveling_factor; m++) {
 
                 if (mmvp_is_num_in_array(m, mirrors_error, mirrors_error_num) != false)
                         continue;
@@ -86,7 +86,7 @@ static uint32_t read_data_and_check_crc_partition(struct mmvp_controller *self, 
         assert(self != NULL);
         assert(partition != NULL);
 
-        mirror_size = mmvp_get_mirror_size(self->device->total_size, self->device->wear_leveling_factor);
+        mirror_size = mmvp_get_mirror_size(self->device->total_size, self->config->wear_leveling_factor);
 
         adr = mmvp_get_data_real_start_address(self->device->page_size, partition->desc->address);
         adr = adr + partition->mirror_index * mirror_size;
@@ -123,7 +123,7 @@ static uint32_t read_data_and_check_crc_partition(struct mmvp_controller *self, 
 
 static bool load_latest_valid_mirror(struct mmvp_controller *self, struct mmvp_partition *partition)
 {
-        int mirrors_with_error[self->device->wear_leveling_factor];
+        int mirrors_with_error[self->config->wear_leveling_factor];
         int mirrors_with_error_num = 0;
 
         int mirror_index;
@@ -133,7 +133,7 @@ static bool load_latest_valid_mirror(struct mmvp_controller *self, struct mmvp_p
         assert(self != NULL);
         assert(partition != NULL);
 
-        while (mirrors_with_error_num < self->device->wear_leveling_factor) {
+        while (mirrors_with_error_num < self->config->wear_leveling_factor) {
                 mirror_index = find_mirror_with_highest_counter(self, partition, mirrors_with_error, mirrors_with_error_num);
                 if (mirror_index < 0) {
                         break;
@@ -167,7 +167,7 @@ static void fill_local_data_with_defaults(struct mmvp_controller *self, struct m
         if (partition->desc->restore_default == NULL) {
                 memset(partition->desc->data, MMVP_PARTITION_MEMORY_DEFAULT_BYTE_VALUE, partition->desc->size);
         } else {
-                partition->desc->restore_default(partition->desc->data, partition->desc->size, partition->dirty);
+                partition->desc->restore_default(partition->desc->data, partition->desc->size);
         }
 }
 

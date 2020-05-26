@@ -29,6 +29,7 @@ static struct mmvp_partition partition1;
 static struct mmvp_partition partition2;
 
 static struct mmvp_device_descriptor device_descriptor;
+static struct mmvp_controller_config controller_config;
 
 static struct mmvp_partition_descriptor partition1_descriptor;
 static struct mmvp_partition_descriptor partition2_descriptor;
@@ -96,7 +97,8 @@ static void prepare_test(void)
 {
         memset(test_device_memory_data, 0x00, TEST_COMMON_DEVICE_MEMORY_TOTAL_SIZE);
         memcpy((uint8_t*)&device_descriptor, (uint8_t*)test_device_descriptor, sizeof(device_descriptor));
-        mmvp_init(&mmvp, &device_descriptor);
+        memcpy((uint8_t*)&controller_config, (uint8_t*)test_controller_config, sizeof(controller_config));
+        mmvp_init(&mmvp, &device_descriptor, &controller_config);
         memcpy((uint8_t*)&partition1_descriptor, (uint8_t*)test_partition1_descriptor, sizeof(partition1_descriptor));
         memcpy((uint8_t*)&partition2_descriptor, (uint8_t*)test_partition2_descriptor, sizeof(partition2_descriptor));
         mmvp_register_partition(&mmvp, &partition1, &partition1_descriptor);
@@ -105,15 +107,15 @@ static void prepare_test(void)
 
 int main(int argc, char **argv)
 {
-	mmvp_error e;
+	mmvp_status e;
 
         prepare_test();
         e = mmvp_start(NULL);
-        assert(e == MMVP_ERROR_NULL_POINTER);
+        assert(e == MMVP_STATUS_ERROR_NULL_POINTER);
 
         prepare_test();
         e = mmvp_start(&mmvp);
-        assert(e == MMVP_ERROR_OK);
+        assert(e == MMVP_STATUS_OK);
         assert(((uint32_t*)partition1.desc->data)[0] == 0x03020100);
         assert(partition1.dirty == true);
         assert(partition1.local_crc == 0);
@@ -127,7 +129,7 @@ int main(int argc, char **argv)
         prepare_device_memory_partition(0, 0, TEST_COMMON_PARTITION1_VERSION, 0x00000001, false, 0xDEADBEEF, 0xCAFEBABE);
         prepare_device_memory_partition(1, 1, TEST_COMMON_PARTITION2_VERSION, 0x00000001, false, 0xBAADC0DE, 0xBABEFACE);
         e = mmvp_start(&mmvp);
-        assert(e == MMVP_ERROR_OK);
+        assert(e == MMVP_STATUS_OK);
         assert(((uint32_t*)partition1.desc->data)[0] == 0xDEADBEEF);
         assert(((uint32_t*)partition1.desc->data)[TEST_COMMON_PARTITION1_SIZE/4 - 1] == 0xCAFEBABE);
         assert(memcmp((uint8_t*)partition1.desc->data, &test_device_memory_data[mmvp_get_data_real_start_address(TEST_COMMON_DEVICE_MEMORY_PAGE_SIZE, TEST_COMMON_PARTITION1_ADDRESS)], TEST_COMMON_PARTITION1_SIZE) == 0);
@@ -143,7 +145,7 @@ int main(int argc, char **argv)
         prepare_device_memory_partition(0, 0, TEST_COMMON_PARTITION1_VERSION, 0x00000001, false, 0xDEADBEEF, 0xCAFEBABE);
         prepare_device_memory_partition(1, 1, TEST_COMMON_PARTITION2_VERSION, 0x00000001, true, 0xBAADC0DE, 0xBABEFACE);
         e = mmvp_start(&mmvp);
-        assert(e == MMVP_ERROR_OK);
+        assert(e == MMVP_STATUS_OK);
         assert(((uint32_t*)partition1.desc->data)[0] == 0xDEADBEEF);
         assert(((uint32_t*)partition1.desc->data)[TEST_COMMON_PARTITION1_SIZE/4 - 1] == 0xCAFEBABE);
         assert(memcmp((uint8_t*)partition1.desc->data, &test_device_memory_data[mmvp_get_data_real_start_address(TEST_COMMON_DEVICE_MEMORY_PAGE_SIZE, TEST_COMMON_PARTITION1_ADDRESS)], TEST_COMMON_PARTITION1_SIZE) == 0);
@@ -159,7 +161,7 @@ int main(int argc, char **argv)
         prepare_device_memory_partition(1, 1, TEST_COMMON_PARTITION2_VERSION, 0x00000001, true, 0xBAADC0DE, 0xBABEFACE);
         prepare_device_memory_partition(1, 0, TEST_COMMON_PARTITION2_VERSION, 0x00000002, false, 0xBAADBABE, 0xDEADCAFE);
         e = mmvp_start(&mmvp);
-        assert(e == MMVP_ERROR_OK);
+        assert(e == MMVP_STATUS_OK);
         assert(((uint32_t*)partition1.desc->data)[0] == 0xDEADBEEF);
         assert(((uint32_t*)partition1.desc->data)[TEST_COMMON_PARTITION1_SIZE/4 - 1] == 0xCAFEBABE);
         assert(memcmp((uint8_t*)partition1.desc->data, &test_device_memory_data[mmvp_get_data_real_start_address(TEST_COMMON_DEVICE_MEMORY_PAGE_SIZE, TEST_COMMON_PARTITION1_ADDRESS)], TEST_COMMON_PARTITION1_SIZE) == 0);
@@ -176,7 +178,7 @@ int main(int argc, char **argv)
         prepare_device_memory_partition(1, 1, TEST_COMMON_PARTITION2_VERSION, 0x00000001, false, 0xBAADC0DE, 0xBABEFACE);
         prepare_device_memory_partition(1, 0, TEST_COMMON_PARTITION2_VERSION, 0x00000002, false, 0xBAADBABE, 0xDEADCAFE);
         e = mmvp_start(&mmvp);
-        assert(e == MMVP_ERROR_OK);
+        assert(e == MMVP_STATUS_OK);
         assert(((uint32_t*)partition1.desc->data)[0] == 0xDEADBEEF);
         assert(((uint32_t*)partition1.desc->data)[TEST_COMMON_PARTITION1_SIZE/4 - 1] == 0xCAFEBABE);
         assert(memcmp((uint8_t*)partition1.desc->data, &test_device_memory_data[mmvp_get_data_real_start_address(TEST_COMMON_DEVICE_MEMORY_PAGE_SIZE, TEST_COMMON_PARTITION1_ADDRESS)], TEST_COMMON_PARTITION1_SIZE) == 0);
@@ -193,7 +195,7 @@ int main(int argc, char **argv)
         prepare_device_memory_partition(1, 1, TEST_COMMON_PARTITION2_VERSION, 0x00000001, false, 0xBAADC0DE, 0xBABEFACE);
         prepare_device_memory_partition(1, 0, TEST_COMMON_PARTITION2_VERSION, 0x00000002, true, 0xBAADBABE, 0xDEADCAFE);
         e = mmvp_start(&mmvp);
-        assert(e == MMVP_ERROR_OK);
+        assert(e == MMVP_STATUS_OK);
         assert(((uint32_t*)partition1.desc->data)[0] == 0xDEADBEEF);
         assert(((uint32_t*)partition1.desc->data)[TEST_COMMON_PARTITION1_SIZE/4 - 1] == 0xCAFEBABE);
         assert(memcmp((uint8_t*)partition1.desc->data, &test_device_memory_data[mmvp_get_data_real_start_address(TEST_COMMON_DEVICE_MEMORY_PAGE_SIZE, TEST_COMMON_PARTITION1_ADDRESS)], TEST_COMMON_PARTITION1_SIZE) == 0);
@@ -210,7 +212,7 @@ int main(int argc, char **argv)
         prepare_device_memory_partition(1, 1, TEST_COMMON_PARTITION2_VERSION, 0x00000003, false, 0xBAADC0DE, 0xBABEFACE);
         prepare_device_memory_partition(1, 0, TEST_COMMON_PARTITION2_VERSION, 0x00000002, false, 0xBAADBABE, 0xDEADCAFE);
         e = mmvp_start(&mmvp);
-        assert(e == MMVP_ERROR_OK);
+        assert(e == MMVP_STATUS_OK);
         assert(((uint32_t*)partition1.desc->data)[0] == 0xDEADBEEF);
         assert(((uint32_t*)partition1.desc->data)[TEST_COMMON_PARTITION1_SIZE/4 - 1] == 0xCAFEBABE);
         assert(memcmp((uint8_t*)partition1.desc->data, &test_device_memory_data[mmvp_get_data_real_start_address(TEST_COMMON_DEVICE_MEMORY_PAGE_SIZE, TEST_COMMON_PARTITION1_ADDRESS)], TEST_COMMON_PARTITION1_SIZE) == 0);
@@ -228,7 +230,7 @@ int main(int argc, char **argv)
         prepare_device_memory_partition(1, 1, TEST_COMMON_PARTITION2_VERSION, 0x00000003, false, 0xBAADC0DE, 0xBABEFACE);
         prepare_device_memory_partition(1, 0, TEST_COMMON_PARTITION2_VERSION, 0x00000002, false, 0xBAADBABE, 0xDEADCAFE);
         e = mmvp_start(&mmvp);
-        assert(e == MMVP_ERROR_OK);
+        assert(e == MMVP_STATUS_OK);
         assert(((uint32_t*)partition1.desc->data)[0] == 0xDEADBEEF);
         assert(((uint32_t*)partition1.desc->data)[TEST_COMMON_PARTITION1_SIZE/4 - 1] == 0xCAFEBABE);
         assert(memcmp((uint8_t*)partition1.desc->data, &test_device_memory_data[mmvp_get_data_real_start_address(TEST_COMMON_DEVICE_MEMORY_PAGE_SIZE, TEST_COMMON_PARTITION1_ADDRESS)], TEST_COMMON_PARTITION1_SIZE) == 0);
@@ -246,7 +248,7 @@ int main(int argc, char **argv)
         prepare_device_memory_partition(1, 1, TEST_COMMON_PARTITION2_VERSION, 0x00000003, false, 0xBAADC0DE, 0xBABEFACE);
         prepare_device_memory_partition(1, 0, TEST_COMMON_PARTITION2_VERSION, 0x00000002, false, 0xBAADBABE, 0xDEADCAFE);
         e = mmvp_start(&mmvp);
-        assert(e == MMVP_ERROR_OK);
+        assert(e == MMVP_STATUS_OK);
         assert(((uint32_t*)partition1.desc->data)[0] == 0xBEEFDEAD);
         assert(((uint32_t*)partition1.desc->data)[TEST_COMMON_PARTITION1_SIZE/4 - 1] == 0xBABECAFE);
         assert(memcmp((uint8_t*)partition1.desc->data, &test_device_memory_data[mmvp_get_data_real_start_address(TEST_COMMON_DEVICE_MEMORY_PAGE_SIZE, TEST_COMMON_PARTITION1_ADDRESS + TEST_COMMON_DEVICE_MEMORY_TOTAL_SIZE / TEST_COMMON_DEVICE_MEMORY_WEAR_LEVELING_FACTOR)], TEST_COMMON_PARTITION1_SIZE) == 0);

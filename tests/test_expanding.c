@@ -29,6 +29,7 @@ static struct mmvp_partition partition1;
 static struct mmvp_partition partition2;
 
 static struct mmvp_device_descriptor device_descriptor;
+static struct mmvp_controller_config controller_config;
 
 static struct mmvp_partition_descriptor partition1_descriptor;
 static struct mmvp_partition_descriptor partition2_descriptor;
@@ -105,7 +106,8 @@ static void prepare_test(void)
 {
         memset(test_device_memory_data, 0x00, TEST_COMMON_DEVICE_MEMORY_TOTAL_SIZE);
         memcpy((uint8_t*)&device_descriptor, (uint8_t*)test_device_descriptor, sizeof(device_descriptor));
-        mmvp_init(&mmvp, &device_descriptor);
+        memcpy((uint8_t*)&controller_config, (uint8_t*)test_controller_config, sizeof(controller_config));
+        mmvp_init(&mmvp, &device_descriptor, &controller_config);
         memcpy((uint8_t*)&partition1_descriptor, (uint8_t*)test_partition1_descriptor, sizeof(partition1_descriptor));
         memcpy((uint8_t*)&partition2_descriptor, (uint8_t*)test_partition2_descriptor, sizeof(partition2_descriptor));
         mmvp_register_partition(&mmvp, &partition1, &partition1_descriptor);
@@ -114,11 +116,11 @@ static void prepare_test(void)
 
 int main(int argc, char **argv)
 {
-	mmvp_error e;
+	mmvp_status e;
 
         prepare_test();
         e = mmvp_start(NULL);
-        assert(e == MMVP_ERROR_NULL_POINTER);
+        assert(e == MMVP_STATUS_ERROR_NULL_POINTER);
 
         prepare_test();
         prepare_device_memory_partition(0, 0, TEST_COMMON_PARTITION1_SIZE, 0x00000001, false, 0xDEADBEEF, 0xCAFEBABE);
@@ -127,7 +129,7 @@ int main(int argc, char **argv)
         partition2_descriptor.size += 4;
         ((uint32_t*)partition1.desc->data)[TEST_COMMON_PARTITION1_SIZE/4 - 1] = 0x12345678;
         e = mmvp_start(&mmvp);
-        assert(e == MMVP_ERROR_OK);
+        assert(e == MMVP_STATUS_OK);
         assert(((uint32_t*)partition1.desc->data)[0] == 0xDEADBEEF);
         assert(((uint32_t*)partition1.desc->data)[TEST_COMMON_PARTITION1_SIZE/4 - 2] == 0xBEBAFECA);
         assert(((uint32_t*)partition1.desc->data)[TEST_COMMON_PARTITION1_SIZE/4 - 1] == 0x12345678);
@@ -153,7 +155,7 @@ int main(int argc, char **argv)
         partition2_descriptor.size += 4;
         ((uint32_t*)partition1.desc->data)[TEST_COMMON_PARTITION1_SIZE/4 - 1] = 0x12345678;
         e = mmvp_start(&mmvp);
-        assert(e == MMVP_ERROR_OK);
+        assert(e == MMVP_STATUS_OK);
         assert(((uint32_t*)partition1.desc->data)[0] == 0xDEADBEEF);
         assert(((uint32_t*)partition1.desc->data)[TEST_COMMON_PARTITION1_SIZE/4 - 2] == 0xBEBAFECA);
         assert(((uint32_t*)partition1.desc->data)[TEST_COMMON_PARTITION1_SIZE/4 - 1] == 0x12345678);

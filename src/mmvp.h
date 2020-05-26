@@ -32,15 +32,15 @@ extern "C" {
 #include "mmvp_partition.h"
 #include "mmvp_device.h"
 #include "mmvp_controller.h"
-#include "mmvp_error.h"
+#include "mmvp_status.h"
 
-mmvp_error mmvp_init(struct mmvp_controller *self, const struct mmvp_device_descriptor *device);
-mmvp_error mmvp_register_partition(struct mmvp_controller *self, struct mmvp_partition *partition, const struct mmvp_partition_descriptor *desc);
-mmvp_error mmvp_unregister_partition(struct mmvp_controller *self, struct mmvp_partition *partition);
-mmvp_error mmvp_start(struct mmvp_controller *self);
-mmvp_error mmvp_confirm_write(struct mmvp_controller *self);
-mmvp_error mmvp_confirm_read(struct mmvp_controller *self, uint32_t address, uint8_t *data, uint32_t size);
-mmvp_error mmvp_service(struct mmvp_controller *self);
+mmvp_status mmvp_init(struct mmvp_controller *self, const struct mmvp_device_descriptor *device, const struct mmvp_controller_config *config);
+mmvp_status mmvp_register_partition(struct mmvp_controller *self, struct mmvp_partition *partition, const struct mmvp_partition_descriptor *desc);
+mmvp_status mmvp_unregister_partition(struct mmvp_controller *self, struct mmvp_partition *partition);
+mmvp_status mmvp_start(struct mmvp_controller *self);
+mmvp_status mmvp_confirm_write(struct mmvp_controller *self);
+mmvp_status mmvp_confirm_read(struct mmvp_controller *self, uint32_t address, uint8_t *data, uint32_t size);
+mmvp_status mmvp_service(struct mmvp_controller *self);
 
 #ifdef __cplusplus
 }

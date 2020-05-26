@@ -44,15 +44,19 @@ static const struct mmvp_device_descriptor _test_device_descriptor = {
         .write = write_page,
 
         .total_size = TEST_COMMON_DEVICE_MEMORY_TOTAL_SIZE,
-        .page_size = TEST_COMMON_DEVICE_MEMORY_PAGE_SIZE,
-        .wear_leveling_factor = TEST_COMMON_DEVICE_MEMORY_WEAR_LEVELING_FACTOR
+        .page_size = TEST_COMMON_DEVICE_MEMORY_PAGE_SIZE
+};
+
+static const struct mmvp_controller_config _test_controller_config = {
+        .wear_leveling_factor = TEST_COMMON_DEVICE_MEMORY_WEAR_LEVELING_FACTOR        
 };
 
 const struct mmvp_device_descriptor *test_device_descriptor = &_test_device_descriptor;
+const struct mmvp_controller_config *test_controller_config = &_test_controller_config;
 
-static void restore_default1(void *data, uint32_t size, bool dirty)
+static void restore_default1(void *data, uint32_t size)
 {
-        uint8_t i = (dirty == false) ? 0 : 0x10;
+        uint8_t i = 0;
         uint8_t *data_ptr = data;
 
         while (size-- > 0)
@@ -69,9 +73,9 @@ static const struct mmvp_partition_descriptor _test_partition1_descriptor = {
         .restore_default = restore_default1
 };
 
-static void restore_default2(void *data, uint32_t size, bool dirty)
+static void restore_default2(void *data, uint32_t size)
 {
-        uint8_t i = (dirty == false) ? 0 : 0x10;
+        uint8_t i = 0;
         uint8_t *data_ptr = data;
 
         while (size-- > 0)

@@ -39,8 +39,6 @@ struct mmvp_device_descriptor {
 
         uint32_t total_size;
         uint32_t page_size;
-
-        int wear_leveling_factor;
 };
 
 #ifdef __cplusplus

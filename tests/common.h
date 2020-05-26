@@ -44,6 +44,7 @@ extern "C" {
 #define TEST_COMMON_DEVICE_MEMORY_WEAR_LEVELING_FACTOR  (2UL)
 
 extern const struct mmvp_device_descriptor *test_device_descriptor;
+extern const struct mmvp_controller_config *test_controller_config;
 
 #define TEST_COMMON_PARTITION1_VERSION          (1UL)
 #define TEST_COMMON_PARTITION1_SIZE             (256UL)

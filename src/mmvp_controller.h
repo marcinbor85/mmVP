@@ -32,8 +32,13 @@ extern "C" {
 #include "mmvp_partition.h"
 #include "mmvp_device.h"
 
+struct mmvp_controller_config {
+        int wear_leveling_factor;
+};
+
 struct mmvp_controller {
         const struct mmvp_device_descriptor *device;
+        const struct mmvp_controller_config *config;
         struct mmvp_partition *first;
 };
 

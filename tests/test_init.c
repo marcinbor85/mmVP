@@ -61,6 +61,16 @@ int main(int argc, char **argv)
         e = mmvp_init(&mmvp, &device_descriptor, &controller_config);
         assert(e == MMVP_STATUS_ERROR_NULL_POINTER);
 
+         prepare_test();
+        device_descriptor.is_read_completed = NULL;
+        e = mmvp_init(&mmvp, &device_descriptor, &controller_config);
+        assert(e == MMVP_STATUS_ERROR_NULL_POINTER);
+
+        prepare_test();
+        device_descriptor.is_write_completed = NULL;
+        e = mmvp_init(&mmvp, &device_descriptor, &controller_config);
+        assert(e == MMVP_STATUS_ERROR_NULL_POINTER);
+
         prepare_test();
         device_descriptor.page_size = 0;
         e = mmvp_init(&mmvp, &device_descriptor, &controller_config);

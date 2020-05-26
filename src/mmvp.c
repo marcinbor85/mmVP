@@ -37,6 +37,9 @@ mmvp_status mmvp_init(struct mmvp_controller *self, const struct mmvp_device_des
 
         mmvp_check_param(device->read != NULL, MMVP_STATUS_ERROR_NULL_POINTER);
         mmvp_check_param(device->write != NULL, MMVP_STATUS_ERROR_NULL_POINTER);
+        mmvp_check_param(device->is_read_completed != NULL, MMVP_STATUS_ERROR_NULL_POINTER);
+        mmvp_check_param(device->is_write_completed != NULL, MMVP_STATUS_ERROR_NULL_POINTER);
+        
         mmvp_check_param(mmvp_is_power_of_two(device->page_size) != false, MMVP_STATUS_ERROR_WRONG_SIZE);
         mmvp_check_param(mmvp_is_power_of_two(device->total_size) != false, MMVP_STATUS_ERROR_WRONG_SIZE);
         mmvp_check_param(mmvp_is_power_of_two(config->wear_leveling_factor) != false, MMVP_STATUS_ERROR_WRONG_FACTOR);

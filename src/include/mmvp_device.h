@@ -32,10 +32,14 @@ extern "C" {
 #include <stdint.h>
 
 typedef int (*mmvp_device_io_handler)(uint32_t address, uint8_t *data, uint32_t size);
+typedef int (*mmvp_device_get_flag_handler)(void);
 
 struct mmvp_device_descriptor {
         mmvp_device_io_handler read;
         mmvp_device_io_handler write;
+
+        mmvp_device_get_flag_handler is_read_completed;
+        mmvp_device_get_flag_handler is_write_completed;
 
         uint32_t total_size;
         uint32_t page_size;

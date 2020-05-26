@@ -39,9 +39,21 @@ static int write_page(uint32_t address, uint8_t *data, uint32_t size)
         return size;
 }
 
+static int is_read_completed(void)
+{
+        return 1;
+}
+
+static int is_write_completed(void)
+{
+        return 1;
+}
+
 static const struct mmvp_device_descriptor _test_device_descriptor = {
         .read = read_page,
         .write = write_page,
+        .is_read_completed = is_read_completed,
+        .is_write_completed = is_write_completed,
 
         .total_size = TEST_COMMON_DEVICE_MEMORY_TOTAL_SIZE,
         .page_size = TEST_COMMON_DEVICE_MEMORY_PAGE_SIZE

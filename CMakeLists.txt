@@ -45,6 +45,10 @@ add_executable( test_start tests/test_start.c )
 target_link_libraries( test_start mmvp test_common)
 add_test( test_start ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test_start )
 
+add_executable( test_expanding tests/test_expanding.c )
+target_link_libraries( test_expanding mmvp test_common)
+add_test( test_expanding ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test_expanding )
+
 add_custom_target( check COMMAND ${CMAKE_CTEST_COMMAND} --verbose )
 add_custom_target( cleanall COMMAND rm -rf Makefile CMakeCache.txt CMakeFiles/ bin/ lib/ cmake_install.cmake CTestTestfile.cmake Testing/ )
 add_custom_target( uninstall COMMAND xargs rm < install_manifest.txt )

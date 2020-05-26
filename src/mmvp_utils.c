@@ -23,15 +23,15 @@ SOFTWARE.
 */
 
 #include "mmvp_utils.h"
+#include "mmvp_assert.h"
 #include "mmvp.h"
 
 #include <stddef.h>
 #include <string.h>
-#include <assert.h>
 
 uint32_t mmvp_get_data_real_start_address(uint32_t page_size, uint32_t address)
 {
-        assert(page_size > 0);
+        mmvp_assert(page_size > 0);
         
         uint32_t adr;
         uint32_t padding;
@@ -44,8 +44,8 @@ uint32_t mmvp_get_data_real_start_address(uint32_t page_size, uint32_t address)
 
 uint32_t mmvp_get_data_real_size(uint32_t page_size, uint32_t address, uint32_t size)
 {
-        assert(page_size > 0);
-        assert(size > 0);
+        mmvp_assert(page_size > 0);
+        mmvp_assert(size > 0);
 
         uint32_t adr;
 
@@ -56,8 +56,8 @@ uint32_t mmvp_get_data_real_size(uint32_t page_size, uint32_t address, uint32_t 
 
 bool mmvp_is_regions_overlap(uint32_t adr1, uint32_t size1, uint32_t adr2, uint32_t size2)
 {
-        assert(size1 > 0);
-        assert(size2 > 0);
+        mmvp_assert(size1 > 0);
+        mmvp_assert(size2 > 0);
 
         uint32_t adr1_end = adr1 + size1;
         uint32_t adr2_end = adr2 + size2;
@@ -84,8 +84,8 @@ bool mmvp_is_power_of_two(uint32_t num)
 
 uint32_t mmvp_get_mirror_size(uint32_t total_size, uint32_t wear_leveling_factor)
 {
-        assert(total_size > 0);
-        assert(wear_leveling_factor > 0);
+        mmvp_assert(total_size > 0);
+        mmvp_assert(wear_leveling_factor > 0);
 
         return total_size / wear_leveling_factor;
 }
@@ -172,6 +172,8 @@ static const uint32_t crc32_table[] = {
 uint32_t mmvp_get_crc32(uint32_t init, uint8_t *data, uint32_t size)
 {
         uint32_t crc = init;
+
+        mmvp_assert(data != NULL);
 
         while (size-- > 0) {
                 crc = (crc << 8) ^ crc32_table[((crc >> 24) ^ *data) & 0xFF];

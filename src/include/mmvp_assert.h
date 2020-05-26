@@ -31,11 +31,15 @@ extern "C" {
 
 #ifdef MMVP_USE_CHECK_PARAM
 
+#include <assert.h>
+
     #define mmvp_check_param(expr, error) { if (!(expr)) return error; }
+    #define mmvp_assert(expr) { assert(expr); }
 
 #else
 
     #define mmvp_check_param(expr, error) ((void)0U)
+    #define mmvp_assert(expr) ((void)0U)
 
 #endif
 

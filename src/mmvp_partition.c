@@ -24,11 +24,10 @@ SOFTWARE.
 
 #include "mmvp_partition.h"
 #include "mmvp_utils.h"
+#include "mmvp_assert.h"
 
 #include <stddef.h>
 #include <string.h>
-
-#include <assert.h>
 
 static int find_mirror_with_highest_counter(struct mmvp_controller *self, struct mmvp_partition *partition, int *mirrors_error, int mirrors_error_num)
 {
@@ -41,10 +40,10 @@ static int find_mirror_with_highest_counter(struct mmvp_controller *self, struct
 
         struct mmvp_partition_header header;
 
-        assert(self != NULL);
-        assert(partition != NULL);
-        assert(mirrors_error != NULL);
-        assert(mirrors_error_num >= 0);
+        mmvp_assert(self != NULL);
+        mmvp_assert(partition != NULL);
+        mmvp_assert(mirrors_error != NULL);
+        mmvp_assert(mirrors_error_num >= 0);
 
         mirror_size = mmvp_get_mirror_size(self->device->total_size, self->config->wear_leveling_factor);
 
@@ -83,8 +82,8 @@ static uint32_t read_data_and_check_crc_partition(struct mmvp_controller *self, 
 
         int i;
 
-        assert(self != NULL);
-        assert(partition != NULL);
+        mmvp_assert(self != NULL);
+        mmvp_assert(partition != NULL);
 
         mirror_size = mmvp_get_mirror_size(self->device->total_size, self->config->wear_leveling_factor);
 
@@ -130,8 +129,8 @@ static bool load_latest_valid_mirror(struct mmvp_controller *self, struct mmvp_p
 
         uint32_t crc;
 
-        assert(self != NULL);
-        assert(partition != NULL);
+        mmvp_assert(self != NULL);
+        mmvp_assert(partition != NULL);
 
         while (mirrors_with_error_num < self->config->wear_leveling_factor) {
                 mirror_index = find_mirror_with_highest_counter(self, partition, mirrors_with_error, mirrors_with_error_num);
@@ -161,8 +160,8 @@ static bool load_latest_valid_mirror(struct mmvp_controller *self, struct mmvp_p
 
 static void fill_local_data_with_defaults(struct mmvp_controller *self, struct mmvp_partition *partition)
 {
-        assert(self != NULL);
-        assert(partition != NULL);
+        mmvp_assert(self != NULL);
+        mmvp_assert(partition != NULL);
 
         if (partition->desc->restore_default == NULL) {
                 memset(partition->desc->data, MMVP_PARTITION_MEMORY_DEFAULT_BYTE_VALUE, partition->desc->size);
@@ -175,8 +174,8 @@ void mmvp_partition_load_data(struct mmvp_controller *self, struct mmvp_partitio
 {
         bool is_loaded;
 
-        assert(self != NULL);
-        assert(partition != NULL);
+        mmvp_assert(self != NULL);
+        mmvp_assert(partition != NULL);
 
         fill_local_data_with_defaults(self, partition);
         is_loaded = load_latest_valid_mirror(self, partition);

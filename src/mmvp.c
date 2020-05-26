@@ -28,7 +28,6 @@ SOFTWARE.
 
 #include <stddef.h>
 #include <string.h>
-#include <assert.h>
 
 mmvp_status mmvp_init(struct mmvp_controller *self, const struct mmvp_device_descriptor *device, const struct mmvp_controller_config *config)
 {

@@ -120,7 +120,7 @@ mmvp_status mmvp_start(struct mmvp_controller *self)
         struct mmvp_partition *curr_part = self->first;
 
         while (curr_part != NULL) {
-                _mmvp_load_partition_data(self, curr_part);
+                mmvp_partition_load_data(self, curr_part);
 
                 curr_part = curr_part->next;
         }

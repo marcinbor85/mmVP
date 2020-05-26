@@ -11,7 +11,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 
 enable_testing( )
 
-include_directories( ${PROJECT_SOURCE_DIR}/src )
+include_directories( ${PROJECT_SOURCE_DIR}/src/include )
 
 file( GLOB SRC_FILES src/*.c )
 add_library( mmvp SHARED ${SRC_FILES} )

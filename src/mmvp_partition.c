@@ -171,7 +171,7 @@ static void fill_local_data_with_defaults(struct mmvp_controller *self, struct m
         }
 }
 
-void _mmvp_load_partition_data(struct mmvp_controller *self, struct mmvp_partition *partition)
+void mmvp_partition_load_data(struct mmvp_controller *self, struct mmvp_partition *partition)
 {
         bool is_loaded;
 
